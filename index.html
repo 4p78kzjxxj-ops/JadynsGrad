@@ -98,7 +98,6 @@ button.danger{background:#fee2e2;color:#b91c1c;}
 .hunt-item.done .check{background:var(--success);border-color:var(--success);color:white;}
 .hunt-title{font-weight:bold;}
 .hunt-sub{font-size:12px;color:var(--muted);margin-top:3px;}
-.camera{font-size:22px;}
 .delete-wrap{grid-column:2 / 4;display:grid;gap:8px;}
 .delete-wrap button{margin:0;padding:10px;font-size:13px;}
 #gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -119,7 +118,6 @@ button.danger{background:#fee2e2;color:#b91c1c;}
  display:grid;place-items:end center;padding:16px;z-index:1000;
 }
 .modal{width:min(100%,520px);background:white;border-radius:24px;padding:18px;}
-.modal h3{margin:0 0 4px;}
 #lightbox{
  position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:9999;
  display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;
@@ -449,7 +447,7 @@ function renderHunt() {
     <div class="hunt-title">${escapeHtml(challenge)}</div>
     <div class="hunt-sub">${done ? myPhotos.length + " uploaded — tap to add another" : "Tap to add photo"}</div>
    </div>
-   <div class="camera"></div>
+   <div></div>
    ${deleteButtons}
   `;
 
