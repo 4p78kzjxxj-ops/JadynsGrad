@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scavenger Hunt Admin</title>
+<title>Admin</title>
 
 <style>
 :root{
@@ -15,7 +15,6 @@
  --text:#111827;
  --muted:#6b7280;
  --danger:#ef4444;
- --success:#22c55e;
 }
 
 *{box-sizing:border-box}
@@ -28,9 +27,9 @@ body{
 }
 
 main{
- max-width:720px;
+ max-width:620px;
  margin:auto;
- padding:18px 16px 40px;
+ padding:18px 16px 90px;
 }
 
 .logo{
@@ -43,6 +42,15 @@ main{
  max-width:38vw;
 }
 
+.watermark{
+ position:fixed;
+ right:18px;
+ bottom:82px;
+ width:90px;
+ opacity:.08;
+ pointer-events:none;
+}
+
 .hero{
  text-align:center;
  margin-bottom:16px;
@@ -51,7 +59,7 @@ main{
 .hero h1{
  margin:8px 0 6px;
  color:var(--blue-dark);
- font-size:34px;
+ font-size:38px;
  line-height:1;
 }
 
@@ -88,118 +96,32 @@ button{
 }
 
 button.danger{
- background:#fee2e2;
- color:#b91c1c;
-}
-
-button.real-danger{
  background:var(--danger);
  color:white;
 }
 
-.stats{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
-}
-
-.stat{
- background:#eef2ff;
- border-radius:18px;
- padding:14px;
- text-align:center;
-}
-
-.stat strong{
- display:block;
- font-size:30px;
- color:var(--blue-dark);
-}
-
-.stat span{
- color:var(--muted);
- font-size:13px;
-}
-
-.section-title{
- margin:4px 0 12px;
- color:var(--blue-dark);
-}
-
-.list{
- display:grid;
- gap:10px;
-}
-
-.row{
- background:white;
- border:1px solid #dbe3ff;
- border-radius:16px;
- padding:12px;
-}
-
-.row strong{
- color:var(--blue-dark);
-}
-
-.row small{
- color:var(--muted);
-}
-
-.photo-grid{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
-}
-
-.photo-card{
- background:white;
- border-radius:18px;
- overflow:hidden;
- border:1px solid #dbe3ff;
- box-shadow:0 8px 18px rgba(0,0,0,.06);
-}
-
-.photo-card img{
- width:100%;
- aspect-ratio:1/1;
- object-fit:cover;
- display:block;
-}
-
-.photo-meta{
- padding:9px;
- font-size:12px;
-}
-
-.empty{
- text-align:center;
- color:var(--muted);
- padding:24px;
- background:white;
- border-radius:18px;
- border:1px solid #dbe3ff;
-}
-
-.warning{
+.notice{
  background:#fff7bf;
  border:1px solid var(--gold);
  color:#4b3d00;
  border-radius:16px;
  padding:12px;
- margin-top:10px;
+ margin-bottom:14px;
  font-size:14px;
 }
 
 .status{
- margin-top:10px;
- font-size:14px;
+ margin-top:12px;
  color:var(--muted);
+ font-size:14px;
+ text-align:center;
 }
 </style>
 </head>
 
 <body>
+
+<img src="logo.png" class="watermark" alt="Logo">
 
 <main>
 
@@ -208,46 +130,24 @@ button.real-danger{
  </div>
 
  <div class="hero">
-  <h1>Admin <span>Dashboard</span></h1>
-  <p>Manage Jadyn’s Graduation Scavenger Hunt.</p>
+  <h1>Admin <span>Page</span></h1>
+  <p>Clear the scavenger hunt data.</p>
  </div>
 
  <section class="card">
-  <div class="stats">
-   <div class="stat">
-    <strong id="playerCount">0</strong>
-    <span>Players</span>
-   </div>
-   <div class="stat">
-    <strong id="photoCount">0</strong>
-    <span>Photos</span>
-   </div>
+  <div class="notice">
+   This will remove all players and all photo records. It will also try to delete uploaded photos from Firebase Storage.
   </div>
 
-  <div class="warning">
-   <strong>Clear Everything</strong><br>
-   This removes all players and all photo records. It will also try to delete uploaded photos from Firebase Storage.
-  </div>
-
-  <button id="clearEverythingBtn" class="real-danger">Clear Everything</button>
+  <button id="clearEverythingBtn" class="danger">Clear Everything</button>
   <div id="status" class="status"></div>
- </section>
-
- <section class="card">
-  <h2 class="section-title">Players</h2>
-  <div id="playersList" class="list"></div>
- </section>
-
- <section class="card">
-  <h2 class="section-title">Photos</h2>
-  <div id="photosList" class="photo-grid"></div>
  </section>
 
 </main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getDatabase, ref, remove, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 import { getStorage, ref as storageRef, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
 const firebaseConfig = {
@@ -264,141 +164,56 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-let players = {};
-let photos = {};
-
-const playerCount = document.getElementById("playerCount");
-const photoCount = document.getElementById("photoCount");
-const playersList = document.getElementById("playersList");
-const photosList = document.getElementById("photosList");
-const statusBox = document.getElementById("status");
 const clearEverythingBtn = document.getElementById("clearEverythingBtn");
-
-onValue(ref(db, "players"), snap => {
- players = snap.val() || {};
- renderPlayers();
- renderCounts();
-});
-
-onValue(ref(db, "photos"), snap => {
- photos = snap.val() || {};
- renderPhotos();
- renderCounts();
-});
+const statusBox = document.getElementById("status");
 
 clearEverythingBtn.addEventListener("click", clearEverything);
 
-function renderCounts() {
- playerCount.innerText = Object.keys(players).length;
- photoCount.innerText = Object.keys(photos).length;
-}
-
-function renderPlayers() {
- playersList.innerHTML = "";
-
- const entries = Object.entries(players);
-
- if (!entries.length) {
-  playersList.innerHTML = `<div class="empty">No players yet.</div>`;
-  return;
- }
-
- entries
-  .sort((a, b) => String(a[1].name || "").localeCompare(String(b[1].name || "")))
-  .forEach(([id, p]) => {
-   const completed = Array.isArray(p.completed) ? p.completed.length : 0;
-
-   const div = document.createElement("div");
-   div.className = "row";
-   div.innerHTML = `
-    <strong>${escapeHtml(p.name || "Unknown Player")}</strong><br>
-    <small>Completed: ${completed}</small><br>
-    <small>ID: ${escapeHtml(id)}</small>
-   `;
-   playersList.appendChild(div);
-  });
-}
-
-function renderPhotos() {
- photosList.innerHTML = "";
-
- const entries = Object.entries(photos);
-
- if (!entries.length) {
-  photosList.innerHTML = `<div class="empty">No photos yet.</div>`;
-  return;
- }
-
- entries
-  .sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0))
-  .forEach(([id, p]) => {
-   const div = document.createElement("div");
-   div.className = "photo-card";
-   div.innerHTML = `
-    <img src="${escapeHtml(p.url || "")}" alt="Photo">
-    <div class="photo-meta">
-     <strong>${escapeHtml(p.playerName || "Guest")}</strong><br>
-     ${escapeHtml(p.challengeText || "Photo")}<br>
-     <small>ID: ${escapeHtml(id)}</small>
-    </div>
-   `;
-   photosList.appendChild(div);
-  });
-}
-
 async function clearEverything() {
- const firstConfirm = confirm("Are you sure you want to clear EVERYTHING? This removes all players and photos.");
- if (!firstConfirm) return;
+ const yes = confirm("This will permanently clear all players and photos. Continue?");
+ if (!yes) return;
 
  const typed = prompt('Type CLEAR to confirm.');
  if (typed !== "CLEAR") {
-  statusBox.innerText = "Clear cancelled.";
+  statusBox.innerText = "Cancelled.";
   return;
  }
 
  clearEverythingBtn.disabled = true;
  clearEverythingBtn.innerText = "Clearing...";
- statusBox.innerText = "Deleting uploaded photos...";
+ statusBox.innerText = "Deleting photos...";
 
  try {
   const photoSnap = await get(ref(db, "photos"));
-  const currentPhotos = photoSnap.val() || {};
-  const photoEntries = Object.entries(currentPhotos);
+  const photos = photoSnap.val() || {};
 
-  for (const [id, photo] of photoEntries) {
-   if (photo.path) {
+  for (const id in photos) {
+   const photo = photos[id];
+
+   if (photo && photo.path) {
     try {
      await deleteObject(storageRef(storage, photo.path));
     } catch (err) {
-     console.warn("Could not delete storage photo:", id, err);
+     console.warn("Storage delete failed:", err);
     }
    }
   }
 
-  statusBox.innerText = "Removing database records...";
+  statusBox.innerText = "Clearing database...";
 
   await remove(ref(db, "photos"));
   await remove(ref(db, "players"));
 
-  statusBox.innerText = "Everything cleared successfully.";
+  statusBox.innerText = "Everything cleared.";
 
  } catch (err) {
   console.error(err);
-  statusBox.innerText = "Clear failed. Check Firebase permissions/rules.";
-  alert("Clear failed. Check Firebase permissions/rules.");
+  statusBox.innerText = "Clear failed. Check Firebase rules.";
+  alert("Clear failed. Check Firebase rules.");
  } finally {
   clearEverythingBtn.disabled = false;
   clearEverythingBtn.innerText = "Clear Everything";
  }
-}
-
-function escapeHtml(value) {
- return String(value)
-  .replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;")
-  .replaceAll("'", "&#039;");
 }
 </script>
 
