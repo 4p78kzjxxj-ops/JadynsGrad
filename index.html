@@ -8,564 +8,198 @@
 <style>
 :root{
   --blue:#0a2cff;
-  --blue-dark:#04127a;
   --gold:#ffd400;
-  --gold-soft:#fff4a8;
   --bg:#f4f7ff;
-  --card:#ffffff;
-  --text:#111827;
-  --muted:#6b7280;
-  --line:#dde5ff;
-  --danger:#ef4444;
-  --success:#22c55e;
-  --shadow:0 18px 45px rgba(10,44,255,.13);
 }
-
-*{box-sizing:border-box;}
 
 body{
   margin:0;
-  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(255,212,0,.38), transparent 34%),
-    radial-gradient(circle at top right, rgba(10,44,255,.18), transparent 28%),
-    linear-gradient(180deg,#ffffff 0%,var(--bg) 42%,#eef3ff 100%);
-  color:var(--text);
-  min-height:100vh;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background-image:linear-gradient(rgba(10,44,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(10,44,255,.035) 1px, transparent 1px);
-  background-size:34px 34px;
-  pointer-events:none;
-  z-index:-1;
+  font-family:Arial;
+  background:var(--bg);
 }
 
 main{
-  width:min(100%,620px);
+  max-width:600px;
   margin:auto;
-  padding:18px 16px 96px;
+  padding:20px;
 }
 
-.logo-wrap{
-  display:flex;
-  justify-content:center;
-  margin:4px 0 12px;
+/* Logo */
+.logo{
+  text-align:center;
+  margin-bottom:10px;
 }
+.logo img{width:120px;}
 
-.logo-wrap img{
-  width:128px;
-  max-width:36vw;
-  filter:drop-shadow(0 10px 18px rgba(4,18,122,.18));
-}
-
+/* Watermark */
 .watermark{
   position:fixed;
-  bottom:86px;
-  right:16px;
-  width:96px;
+  bottom:80px;
+  right:20px;
+  width:90px;
   opacity:.08;
   pointer-events:none;
-  z-index:0;
 }
 
-.hero{
-  text-align:center;
-  margin-bottom:16px;
-}
-
-.kicker{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 12px;
-  border-radius:999px;
-  background:rgba(255,212,0,.24);
-  border:1px solid rgba(255,212,0,.7);
-  color:var(--blue-dark);
-  font-size:12px;
-  font-weight:900;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-h1{
-  margin:12px 0 6px;
-  color:var(--blue-dark);
-  font-size:clamp(34px,8vw,52px);
-  line-height:.96;
-  letter-spacing:-.055em;
-}
-
-h1 span{
-  color:var(--blue);
-  display:block;
-}
-
-.hero p{
-  margin:8px auto 0;
-  max-width:400px;
-  color:var(--muted);
-  font-size:15px;
-  line-height:1.45;
-}
-
+/* Card */
 .card{
-  position:relative;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(14px);
-  border:1px solid rgba(10,44,255,.12);
-  border-radius:28px;
+  background:white;
   padding:20px;
-  margin-bottom:16px;
-  box-shadow:var(--shadow);
-  overflow:hidden;
+  border-radius:20px;
+  margin-bottom:15px;
+  border:2px solid var(--blue);
 }
 
-.card::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:5px;
-  background:linear-gradient(90deg,var(--blue),var(--gold));
-}
-
-.card h2{
-  margin:0 0 8px;
-  color:var(--blue-dark);
-  font-size:26px;
-  letter-spacing:-.03em;
-}
-
-.small{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.35;
-}
-
-input{
-  width:100%;
-  padding:16px 15px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:#fff;
-  color:var(--text);
-  font-size:17px;
-  outline:none;
-  margin-top:10px;
-}
-
-input:focus{
-  border-color:var(--blue);
-  box-shadow:0 0 0 4px rgba(10,44,255,.12);
-}
-
+/* Button */
 button{
   width:100%;
-  border:0;
-  border-radius:16px;
-  padding:15px 18px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
   margin-top:10px;
-  background:linear-gradient(135deg,var(--blue),var(--blue-dark));
-  color:#fff;
-  font-weight:900;
-  font-size:16px;
-  letter-spacing:.01em;
-  cursor:pointer;
-  box-shadow:0 12px 22px rgba(10,44,255,.18);
 }
 
-button:active{transform:translateY(1px) scale(.99);}
-
 button.secondary{
-  background:#fff;
-  color:var(--blue-dark);
-  border:1px solid rgba(10,44,255,.18);
-  box-shadow:none;
+  background:#eee;
+  color:#000;
 }
 
 button.danger{
-  background:#fff1f2;
-  color:#b91c1c;
-  border:1px solid #fecdd3;
-  box-shadow:none;
+  background:#ff3b30;
 }
 
-.hidden{display:none!important;}
-
-.progress-card{
-  display:grid;
-  gap:10px;
-}
-
-.welcome-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-#welcome{
-  color:var(--blue-dark);
-  font-size:20px;
-  font-weight:900;
-}
-
-#progress{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:72px;
-  padding:7px 10px;
-  border-radius:999px;
-  background:var(--gold-soft);
-  color:#4b3d00;
-  font-weight:900;
-  font-size:13px;
-}
-
-.progress-track{
-  height:12px;
-  border-radius:999px;
-  background:#e5eaff;
-  overflow:hidden;
-}
-
-#progressBar{
-  height:100%;
-  width:0%;
-  border-radius:999px;
-  background:linear-gradient(90deg,var(--gold),var(--success));
-  transition:width .25s ease;
-}
-
-.notice{
-  padding:13px 14px;
-  margin-bottom:14px;
-  border-radius:18px;
-  background:rgba(255,212,0,.18);
-  border:1px solid rgba(255,212,0,.45);
-  color:#514300;
-  font-size:14px;
-  line-height:1.4;
-}
-
-.hunt-list{
-  display:grid;
-  gap:12px;
-}
-
+/* Hunt */
 .hunt-item{
-  position:relative;
-  display:grid;
-  grid-template-columns:34px 1fr 36px;
-  align-items:center;
-  gap:12px;
-  padding:15px;
-  border-radius:22px;
-  background:rgba(255,255,255,.96);
-  border:1px solid rgba(10,44,255,.12);
-  box-shadow:0 10px 26px rgba(4,18,122,.07);
-  cursor:pointer;
+  padding:12px;
+  border:2px solid var(--blue);
+  border-radius:12px;
+  margin-bottom:10px;
 }
 
 .hunt-item.done{
-  border-color:rgba(34,197,94,.35);
-  background:linear-gradient(180deg,#ffffff,#f1fff6);
+  background:#fff4b3;
 }
 
-.check{
-  width:30px;
-  height:30px;
-  border-radius:10px;
-  display:grid;
-  place-items:center;
-  border:2px solid #c8d2ff;
-  color:#fff;
-  font-weight:900;
-  background:#fff;
-}
-
-.hunt-item.done .check{
-  background:var(--success);
-  border-color:var(--success);
-}
-
-.hunt-title{
-  font-size:15px;
-  font-weight:900;
-  color:#111827;
-}
-
-.hunt-subtitle{
-  margin-top:3px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.camera-icon{
-  width:36px;
-  height:36px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  background:rgba(10,44,255,.09);
-  font-size:18px;
-}
-
-.delete-wrap{
-  grid-column:2 / 4;
-  display:grid;
-  gap:8px;
-  margin-top:4px;
-}
-
-.delete-wrap button{
-  margin-top:0;
-  padding:10px 12px;
-  font-size:13px;
-  border-radius:13px;
-}
-
-.gallery-head{
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.gallery-head h2{
-  margin:0;
-  color:var(--blue-dark);
-  font-size:28px;
-  letter-spacing:-.04em;
-}
-
+/* Gallery */
 #gallery{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-.photo-tile{
-  overflow:hidden;
-  border-radius:22px;
-  background:#fff;
-  border:1px solid rgba(10,44,255,.12);
-  box-shadow:0 10px 26px rgba(4,18,122,.08);
-}
-
-.photo-tile img{
-  display:block;
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:0;
-}
-
-.photo-meta{
-  padding:10px;
-  font-size:12px;
-}
-
-.photo-meta strong{
-  color:var(--blue-dark);
-}
-
-.bottom-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
-  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,.92);
-  border-top:1px solid rgba(10,44,255,.12);
-  backdrop-filter:blur(12px);
-  z-index:50;
 }
 
-.bottom-nav button{
-  margin:0;
-  padding:12px;
-  border-radius:15px;
-  font-size:14px;
+img{
+  width:100%;
+  border-radius:10px;
 }
 
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(4,18,122,.56);
-  display:grid;
-  place-items:end center;
-  padding:16px;
-  z-index:1000;
-}
+.hidden{display:none}
 
-.modal{
-  width:min(100%,520px);
-  background:#fff;
-  border-radius:28px;
-  padding:20px;
-  box-shadow:0 24px 70px rgba(0,0,0,.28);
-}
-
-.modal h3{
-  margin:0 0 5px;
-  color:var(--blue-dark);
-  font-size:22px;
-}
-
-.modal-buttons{
-  display:grid;
-  gap:8px;
-  margin-top:14px;
-}
-
+/* Lightbox */
 #lightbox{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.94);
-  z-index:9999;
+  background:black;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  padding:14px;
+  z-index:9999;
 }
 
-#lightbox.hidden{display:none;}
-
 #lightbox img{
-  max-width:82vw;
-  max-height:82vh;
-  width:auto;
-  object-fit:contain;
-  border-radius:14px;
-  box-shadow:0 14px 40px rgba(0,0,0,.5);
+  max-width:90%;
+  max-height:90%;
 }
 
 #lightbox button{
-  width:auto;
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:40px;
+  background:none;
+}
+
+#lightbox .left{left:10px;}
+#lightbox .right{right:10px;}
+
+/* Bottom Nav */
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  display:flex;
+}
+
+.nav button{
+  flex:1;
   margin:0;
-  padding:10px 12px;
-  font-size:44px;
-  line-height:1;
-  background:transparent;
-  box-shadow:none;
-  color:#fff;
-}
-
-.empty-state{
-  padding:24px;
-  border-radius:22px;
-  background:#fff;
-  border:1px dashed rgba(10,44,255,.28);
-  color:var(--muted);
-  text-align:center;
-}
-
-@media(max-width:420px){
-  main{padding-inline:12px;}
-  .card{border-radius:24px;padding:18px;}
-  #gallery{gap:10px;}
 }
 </style>
 </head>
 
 <body>
-<img src="logo.png" class="watermark" alt="Logo watermark">
+
+<img src="logo.png" class="watermark">
 
 <main>
-  <div class="logo-wrap">
-    <img src="logo.png" alt="Graduation logo">
-  </div>
 
-  <section class="hero">
-    <div class="kicker">Photo Challenge</div>
-    <h1>Graduation <span>Scavenger Hunt</span></h1>
-    <p>Snap the moments, complete the list, and help build a shared party photo album.</p>
-  </section>
+<div class="logo">
+<img src="logo.png">
+</div>
 
-  <section id="homePage" class="card">
-    <h2>Play Now!</h2>
-    <div class="small">Enter your name to start playing.</div>
-    <input id="name" placeholder="Enter name" autocomplete="name" />
-    <button onclick="join()">Start Playing</button>
-  </section>
+<div id="home" class="card">
+<h2>Play Now</h2>
+<input id="name" placeholder="Enter name">
+<button onclick="join()">Start Playing</button>
+</div>
 
-  <section id="huntPage" class="hidden">
-    <div class="card progress-card">
-      <div class="welcome-row">
-        <strong id="welcome"></strong>
-        <div id="progress">0/0</div>
-      </div>
-      <div class="progress-track"><div id="progressBar"></div></div>
-    </div>
+<div id="hunt" class="hidden">
+<div class="card">
+<div id="welcome"></div>
+<div id="progress"></div>
+</div>
 
-    <div class="notice">Tap a challenge to take a new photo or upload one from your camera roll. Your delete buttons show here under your uploaded challenge photos.</div>
+<div id="list"></div>
+</div>
 
-    <div id="huntList" class="hunt-list"></div>
-  </section>
+<div id="photos" class="hidden">
+<h2>Photos</h2>
+<div id="gallery"></div>
+</div>
 
-  <section id="galleryPage" class="hidden">
-    <div class="gallery-head">
-      <div>
-        <h2>Photos</h2>
-        <div class="small">Tap a photo to view and swipe through the gallery.</div>
-      </div>
-    </div>
-    <div id="gallery"></div>
-  </section>
 </main>
 
-<nav id="bottomNav" class="bottom-nav hidden">
-  <button id="huntNavButton" onclick="showHunt()">Hunt</button>
-  <button id="photosNavButton" class="secondary" onclick="showGallery()">Photos</button>
-</nav>
-
-<div id="photoChoiceModal" class="modal-backdrop hidden">
-  <div class="modal">
-    <h3 id="modalChallengeTitle">Choose Photo</h3>
-    <div class="small">Take a new picture or upload one from your camera roll.</div>
-    <div class="modal-buttons">
-      <button id="takePhotoButton">Take Photo</button>
-      <button id="cameraRollButton" class="secondary">Upload From Camera Roll</button>
-      <button id="cancelPhotoButton" class="danger">Cancel</button>
-    </div>
-  </div>
+<div class="nav hidden" id="nav">
+<button onclick="showHunt()">Hunt</button>
+<button onclick="showPhotos()">Photos</button>
 </div>
 
-<div id="lightbox" class="hidden" onclick="closeLightbox()">
-  <button onclick="event.stopPropagation(); prevPhoto()">‹</button>
-  <img id="lightboxImg" alt="Expanded photo">
-  <button onclick="event.stopPropagation(); nextPhoto()">›</button>
+<div id="lightbox" class="hidden">
+<button class="left" onclick="prev()">‹</button>
+<img id="lightImg">
+<button class="right" onclick="next()">›</button>
 </div>
 
-<input id="cameraInput" type="file" accept="image/*" capture="environment" class="hidden" />
-<input id="uploadInput" type="file" accept="image/*" class="hidden" />
+<input id="cam" type="file" accept="image/*" capture="environment" class="hidden">
+<input id="upload" type="file" accept="image/*" class="hidden">
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "YOUR_DB_URL",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCAz2tKoSLs1aFhHGvwF0juNYp6BOJ69ZI",
+  authDomain: "jadyngrad-975d6.firebaseapp.com",
+  databaseURL: "https://jadyngrad-975d6-default-rtdb.firebaseio.com",
+  projectId: "jadyngrad-975d6",
+  storageBucket: "jadyngrad-975d6.firebasestorage.app",
+  messagingSenderId: "802057331885",
+  appId: "1:802057331885:web:18708dd1307c5d997a9224"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -574,267 +208,145 @@ const storage = getStorage(app);
 
 const challenges = ["Jadyn smiling","Selfie","Food table","Group photo"];
 
-let player = JSON.parse(localStorage.getItem("gradPlayer") || "null");
-let photos = [];
-let currentChallenge = null;
-let currentPhotoIndex = 0;
-let touchStartX = 0;
+let player=null;
+let photos=[];
+let current=null;
+let index=0;
 
-const homePage = document.getElementById("homePage");
-const huntPage = document.getElementById("huntPage");
-const galleryPage = document.getElementById("galleryPage");
-const bottomNav = document.getElementById("bottomNav");
-const photoChoiceModal = document.getElementById("photoChoiceModal");
-const modalChallengeTitle = document.getElementById("modalChallengeTitle");
-const cameraInput = document.getElementById("cameraInput");
-const uploadInput = document.getElementById("uploadInput");
+function join(){
+  const name=document.getElementById("name").value;
+  if(!name) return alert("Enter name");
 
-if(player){
-  homePage.classList.add("hidden");
-  bottomNav.classList.remove("hidden");
-  document.getElementById("welcome").innerText = "Welcome, " + player.name;
-  showHunt();
+  const id=Date.now().toString();
+  player={id,name,completed:[]};
+
+  set(ref(db,"players/"+id),player);
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("hunt").classList.remove("hidden");
+  document.getElementById("nav").classList.remove("hidden");
+
+  document.getElementById("welcome").innerText=name;
   render();
 }
 
-document.getElementById("takePhotoButton").onclick = function(){
-  closePhotoChoice();
-  cameraInput.value = "";
-  cameraInput.click();
-};
-
-document.getElementById("cameraRollButton").onclick = function(){
-  closePhotoChoice();
-  uploadInput.value = "";
-  uploadInput.click();
-};
-
-document.getElementById("cancelPhotoButton").onclick = closePhotoChoice;
-
-photoChoiceModal.addEventListener("click", function(e){
-  if(e.target === photoChoiceModal) closePhotoChoice();
-});
-
-window.join = async function(){
-  const name = document.getElementById("name").value.trim();
-  if(!name) return alert("Enter name");
-
-  const id = Date.now().toString();
-  player = { id, name, completed:[] };
-
-  await set(ref(db,"players/"+id), player);
-  localStorage.setItem("gradPlayer", JSON.stringify(player));
-
-  homePage.classList.add("hidden");
-  bottomNav.classList.remove("hidden");
-  document.getElementById("welcome").innerText = "Welcome, " + name;
-  showHunt();
-  render();
-};
-
 function render(){
-  if(!player) return;
-
-  const list = document.getElementById("huntList");
-  list.innerHTML = "";
+  const list=document.getElementById("list");
+  list.innerHTML="";
 
   challenges.forEach((c,i)=>{
-    const done = player.completed.includes(i);
-    const myPhotos = photos.filter(p=>p.playerId===player.id && Number(p.challenge)===i);
+    const done=player.completed.includes(i);
 
-    const div = document.createElement("div");
-    div.className = "hunt-item " + (done ? "done" : "");
-    div.onclick = ()=>selectPhoto(i);
+    const div=document.createElement("div");
+    div.className="hunt-item "+(done?"done":"");
+    div.innerHTML=c;
 
-    const deleteButtons = myPhotos.length ? `
-      <div class="delete-wrap">
-        ${myPhotos.map((p,index)=>`
-          <button class="danger" onclick="event.stopPropagation(); deletePhoto('${p.id}')">
-            Delete ${myPhotos.length > 1 ? `Photo ${index + 1}` : "Photo"}
-          </button>
-        `).join("")}
-      </div>
-    ` : "";
+    div.onclick=()=>choose(i);
 
-    div.innerHTML = `
-      <div class="check">${done ? "✓" : ""}</div>
-      <div>
-        <div class="hunt-title">${escapeHtml(c)}</div>
-        <div class="hunt-subtitle">${done ? `${myPhotos.length} uploaded — tap to add another` : "Tap to upload"}</div>
-      </div>
-      <div class="camera-icon">📷</div>
-      ${deleteButtons}
-    `;
+    const mine=photos.filter(p=>p.playerId===player.id && p.challenge===i);
+
+    mine.forEach(p=>{
+      const btn=document.createElement("button");
+      btn.innerText="Delete";
+      btn.className="danger";
+      btn.onclick=(e)=>{e.stopPropagation();del(p)};
+      div.appendChild(btn);
+    });
 
     list.appendChild(div);
   });
 
-  const total = challenges.length;
-  const complete = player.completed.length;
-  document.getElementById("progress").innerText = complete + "/" + total;
-  document.getElementById("progressBar").style.width = total ? ((complete / total) * 100) + "%" : "0%";
+  document.getElementById("progress").innerText=
+    player.completed.length+"/"+challenges.length;
 }
 
-function selectPhoto(i){
-  currentChallenge = i;
-  modalChallengeTitle.innerText = challenges[i];
-  photoChoiceModal.classList.remove("hidden");
+function choose(i){
+  current=i;
+  if(confirm("OK = camera, Cancel = upload")){
+    document.getElementById("cam").click();
+  }else{
+    document.getElementById("upload").click();
+  }
 }
 
-function closePhotoChoice(){
-  photoChoiceModal.classList.add("hidden");
-}
-
-cameraInput.onchange = e=>upload(e.target.files[0]);
-uploadInput.onchange = e=>upload(e.target.files[0]);
+document.getElementById("cam").onchange=e=>upload(e.target.files[0]);
+document.getElementById("upload").onchange=e=>upload(e.target.files[0]);
 
 async function upload(file){
-  if(!file || currentChallenge === null || !player) return;
+  const path="photos/"+Date.now();
+  const refS=sRef(storage,path);
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-  const path = "photos/" + player.id + "/" + Date.now() + "-" + safeName;
-  const refStorage = sRef(storage,path);
+  await uploadBytes(refS,file);
+  const url=await getDownloadURL(refS);
 
-  await uploadBytes(refStorage,file);
-  const url = await getDownloadURL(refStorage);
-
-  const newRef = push(ref(db,"photos"));
-  await set(newRef,{
+  const newRef=push(ref(db,"photos"));
+  set(newRef,{
     playerId:player.id,
     playerName:player.name,
-    challenge:currentChallenge,
-    challengeText:challenges[currentChallenge],
+    challenge:current,
     url,
-    path,
-    createdAt:Date.now()
+    path
   });
 
-  if(!player.completed.includes(currentChallenge)){
-    player.completed.push(currentChallenge);
-    await update(ref(db,"players/"+player.id),{completed:player.completed});
-    localStorage.setItem("gradPlayer", JSON.stringify(player));
+  if(!player.completed.includes(current)){
+    player.completed.push(current);
+    update(ref(db,"players/"+player.id),{completed:player.completed});
   }
-
-  render();
 }
 
-window.deletePhoto = async function(photoId){
-  const p = photos.find(photo=>photo.id===photoId);
-  if(!p) return alert("Photo not found");
-  if(!player || p.playerId !== player.id) return alert("You can only delete your own photos.");
-  if(!confirm("Delete this photo?")) return;
-
-  try{ await deleteObject(sRef(storage,p.path)); } catch(e){ console.warn(e); }
-  await remove(ref(db,"photos/"+p.id));
-  await recalculateProgress();
-};
-
-async function recalculateProgress(){
-  if(!player) return;
-
-  const snap = await get(ref(db,"photos"));
-  const val = snap.val() || {};
-  const remaining = Object.values(val)
-    .filter(p=>p.playerId===player.id)
-    .map(p=>Number(p.challenge));
-
-  player.completed = [...new Set(remaining)];
-  await update(ref(db,"players/"+player.id),{completed:player.completed});
-  localStorage.setItem("gradPlayer", JSON.stringify(player));
-  render();
+function del(p){
+  deleteObject(sRef(storage,p.path));
+  remove(ref(db,"photos/"+p.id));
 }
 
 onValue(ref(db,"photos"),snap=>{
-  const val = snap.val() || {};
-  photos = Object.entries(val)
-    .map(([id,v])=>({id,...v}))
-    .sort((a,b)=>(b.createdAt || 0) - (a.createdAt || 0));
-
+  const val=snap.val()||{};
+  photos=Object.entries(val).map(([id,v])=>({id,...v}));
   renderGallery();
   if(player) render();
 });
 
 function renderGallery(){
-  const g = document.getElementById("gallery");
-  g.innerHTML = "";
-
-  if(!photos.length){
-    g.innerHTML = `<div class="empty-state">No photos yet.</div>`;
-    return;
-  }
-
-  photos.forEach((p,index)=>{
-    const div = document.createElement("div");
-    div.className = "photo-tile";
-    div.innerHTML = `
-      <img src="${escapeHtml(p.url)}" onclick="openLightbox(${index})" alt="Photo">
-      <div class="photo-meta">
-        <strong>${escapeHtml(p.playerName || "Guest")}</strong><br>
-        <span class="small">${escapeHtml(p.challengeText || challenges[p.challenge] || "Photo")}</span>
-      </div>
-    `;
-    g.appendChild(div);
+  const g=document.getElementById("gallery");
+  g.innerHTML="";
+  photos.forEach((p,i)=>{
+    const d=document.createElement("div");
+    d.innerHTML=`<img src="${p.url}" onclick="open(${i})">`;
+    g.appendChild(d);
   });
 }
 
-window.showGallery = function(){
-  huntPage.classList.add("hidden");
-  galleryPage.classList.remove("hidden");
-  document.getElementById("huntNavButton").classList.add("secondary");
-  document.getElementById("photosNavButton").classList.remove("secondary");
-};
+function showHunt(){
+  document.getElementById("photos").classList.add("hidden");
+  document.getElementById("hunt").classList.remove("hidden");
+}
 
-window.showHunt = function(){
-  galleryPage.classList.add("hidden");
-  huntPage.classList.remove("hidden");
-  document.getElementById("huntNavButton").classList.remove("secondary");
-  document.getElementById("photosNavButton").classList.add("secondary");
-};
+function showPhotos(){
+  document.getElementById("hunt").classList.add("hidden");
+  document.getElementById("photos").classList.remove("hidden");
+}
 
-window.openLightbox = function(index){
-  if(!photos.length) return;
-  currentPhotoIndex = index;
-  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
+window.open=function(i){
+  index=i;
   document.getElementById("lightbox").classList.remove("hidden");
-};
+  document.getElementById("lightImg").src=photos[index].url;
+}
 
-window.closeLightbox = function(){
+window.next=function(){
+  index=(index+1)%photos.length;
+  document.getElementById("lightImg").src=photos[index].url;
+}
+
+window.prev=function(){
+  index=(index-1+photos.length)%photos.length;
+  document.getElementById("lightImg").src=photos[index].url;
+}
+
+document.getElementById("lightbox").onclick=()=>{
   document.getElementById("lightbox").classList.add("hidden");
 };
 
-window.nextPhoto = function(){
-  if(!photos.length) return;
-  currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
-  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
-};
-
-window.prevPhoto = function(){
-  if(!photos.length) return;
-  currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
-  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
-};
-
-document.getElementById("lightbox").addEventListener("touchstart", function(e){
-  touchStartX = e.changedTouches[0].screenX;
-});
-
-document.getElementById("lightbox").addEventListener("touchend", function(e){
-  const touchEndX = e.changedTouches[0].screenX;
-  const diff = touchStartX - touchEndX;
-
-  if(Math.abs(diff) > 50){
-    diff > 0 ? nextPhoto() : prevPhoto();
-  }
-});
-
-function escapeHtml(value){
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
 </script>
+
 </body>
 </html>
