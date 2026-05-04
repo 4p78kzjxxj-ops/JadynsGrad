@@ -164,23 +164,17 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-const clearEverythingBtn = document.getElementById("clearEverythingBtn");
+const btn = document.getElementById("clearEverythingBtn");
 const statusBox = document.getElementById("status");
 
-clearEverythingBtn.addEventListener("click", clearEverything);
+btn.addEventListener("click", clearEverything);
 
 async function clearEverything() {
- const yes = confirm("This will permanently clear all players and photos. Continue?");
- if (!yes) return;
+ const confirmed = confirm("Are you sure you want to clear EVERYTHING?");
+ if (!confirmed) return;
 
- const typed = prompt('Type CLEAR to confirm.');
- if (typed !== "CLEAR") {
-  statusBox.innerText = "Cancelled.";
-  return;
- }
-
- clearEverythingBtn.disabled = true;
- clearEverythingBtn.innerText = "Clearing...";
+ btn.disabled = true;
+ btn.innerText = "Clearing...";
  statusBox.innerText = "Deleting photos...";
 
  try {
@@ -211,8 +205,8 @@ async function clearEverything() {
   statusBox.innerText = "Clear failed. Check Firebase rules.";
   alert("Clear failed. Check Firebase rules.");
  } finally {
-  clearEverythingBtn.disabled = false;
-  clearEverythingBtn.innerText = "Clear Everything";
+  btn.disabled = false;
+  btn.innerText = "Clear Everything";
  }
 }
 </script>
