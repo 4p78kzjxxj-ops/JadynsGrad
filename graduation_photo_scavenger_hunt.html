@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadyn Graduation Photo Scavenger Hunt</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --blue: #3d8fc5;
+      --dark-blue: #123d5c;
+      --gold: #d6a84f;
+      --bg: #f5f8fb;
+      --text: #16202a;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --green: #1f9d55;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eaf5ff 0%, var(--bg) 45%, #ffffff 100%);
+      color: var(--text);
+    }
+
+    header {
+      padding: 22px 18px 12px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid rgba(18, 61, 92, 0.2);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--dark-blue);
+      background: rgba(255,255,255,.7);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 4px 0 4px;
+      font-size: clamp(32px, 8vw, 48px);
+      line-height: 1;
+      color: var(--dark-blue);
+    }
+
+    h1 span {
+      color: var(--blue);
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 8px auto 0;
+      color: var(--muted);
+      max-width: 340px;
+      font-size: 15px;
+    }
+
+    main {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 12px 16px 88px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 12px 35px rgba(18, 61, 92, 0.12);
+      border: 1px solid rgba(18, 61, 92, 0.08);
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 15px;
+      font-size: 18px;
+      border: 1px solid #d5dce5;
+      border-radius: 14px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(61, 143, 197, .14);
+    }
+
+    button, .button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 15px 18px;
+      font-size: 18px;
+      font-weight: 800;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button.secondary {
+      background: #eef5fb;
+      color: var(--dark-blue);
+      border: 1px solid rgba(18, 61, 92, .1);
+    }
+
+    button.gold {
+      background: var(--gold);
+      color: #211600;
+    }
+
+    .hidden { display: none !important; }
+
+    .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,.96);
+      border-top: 1px solid #dbe4ed;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+
+    .tabs button {
+      padding: 11px 8px;
+      border-radius: 14px;
+      font-size: 13px;
+      background: #eef5fb;
+      color: var(--dark-blue);
+    }
+
+    .tabs button.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .progress-wrap {
+      background: #d9e8f3;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+      margin: 12px 0 6px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+      transition: width .2s ease;
+    }
+
+    .hunt-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .hunt-item {
+      display: grid;
+      grid-template-columns: 30px 1fr 34px;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e3e9f0;
+      cursor: pointer;
+    }
+
+    .hunt-item.done {
+      background: #effaf3;
+      border-color: #b7e2c3;
+    }
+
+    .check {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #8a98a8;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+    }
+
+    .hunt-item.done .check {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .camera-icon {
+      font-size: 22px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .photo-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e3e9f0;
+      box-shadow: 0 6px 16px rgba(18, 61, 92, .08);
+    }
+
+    .photo-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-meta {
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 13px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .leader-row:last-child { border-bottom: 0; }
+
+    .pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef5fb;
+      color: var(--dark-blue);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .notice {
+      padding: 12px;
+      background: #fff8e7;
+      border: 1px solid #f0d48b;
+      color: #5f4100;
+      border-radius: 14px;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">Class of 2026</div>
+    <h1>Graduation <span>Scavenger Hunt</span></h1>
+    <p class="subtitle">Take pictures, check off the list, and help build a shared photo album for Jadyn.</p>
+  </header>
+
+  <main>
+    <section id="homePage" class="card">
+      <h2>Play now!</h2>
+      <p class="small">Enter your name to join the hunt.</p>
+      <label for="participantName">Participant name</label>
+      <input id="participantName" type="text" placeholder="Example: Uncle Mike" autocomplete="name" />
+      <br><br>
+      <button onclick="joinGame()">Start Playing</button>
+    </section>
+
+    <section id="huntPage" class="hidden">
+      <div class="card">
+        <strong id="welcomeName">Welcome!</strong>
+        <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="progressText" class="small">0/0 complete</div>
+      </div>
+
+      <div class="notice">
+        Tap a challenge to open your camera. After you take the picture, it will upload and mark that item complete.
+      </div>
+
+      <div id="huntList" class="hunt-list"></div>
+    </section>
+
+    <section id="galleryPage" class="hidden">
+      <div class="card">
+        <h2>Shared Photos</h2>
+        <p class="small">Photos uploaded by everyone playing.</p>
+      </div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+
+    <section id="leaderboardPage" class="hidden">
+      <div class="card">
+        <h2>Who’s Playing?</h2>
+        <p class="small">See everyone’s progress.</p>
+        <div id="leaderboard"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav id="tabs" class="tabs hidden">
+    <button id="tabHunt" class="active" onclick="showPage('hunt')">Hunt</button>
+    <button id="tabGallery" onclick="showPage('gallery')">Photos</button>
+    <button id="tabLeaderboard" onclick="showPage('leaderboard')">Players</button>
+  </nav>
+
+  <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
+
+  <script>
+    /**************************************************************
+     * SETUP REQUIRED
+     * 1. Create a free Supabase project.
+     * 2. Create a bucket named: scavenger-photos
+     * 3. Create two tables using the SQL below.
+     * 4. Replace SUPABASE_URL and SUPABASE_ANON_KEY below.
+     *
+     * SQL TABLES:
+     *
+     * create table participants (
+     *   id uuid primary key default gen_random_uuid(),
+     *   name text not null,
+     *   joined_at timestamp with time zone default now()
+     * );
+     *
+     * create table submissions (
+     *   id uuid primary key default gen_random_uuid(),
+     *   participant_id uuid references participants(id),
+     *   participant_name text not null,
+     *   challenge_index int not null,
+     *   challenge_text text not null,
+     *   image_url text not null,
+     *   created_at timestamp with time zone default now(),
+     *   unique(participant_id, challenge_index)
+     * );
+     **************************************************************/
+
+    const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL_HERE";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE";
+    const STORAGE_BUCKET = "scavenger-photos";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const challenges = [
+      "Jadyn smiling",
+      "Jadyn and his dad",
+      "Jadyn and his mom",
+      "Jadyn and Jenny",
+      "Jadyn and Brian",
+      "Jadyn with sibling(s)",
+      "Jadyn looking surprised",
+      "Jadyn dancing",
+      "Jadyn pointing at something",
+      "The food table",
+      "The dessert",
+      "A selfie",
+      "A selfie with you and Jadyn",
+      "People gathering",
+      "Your favorite decoration/prop"
+    ];
+
+    let participant = JSON.parse(localStorage.getItem("gradParticipant") || "null");
+    let completed = JSON.parse(localStorage.getItem("gradCompleted") || "[]");
+    let selectedChallengeIndex = null;
+
+    const homePage = document.getElementById("homePage");
+    const huntPage = document.getElementById("huntPage");
+    const galleryPage = document.getElementById("galleryPage");
+    const leaderboardPage = document.getElementById("leaderboardPage");
+    const tabs = document.getElementById("tabs");
+    const cameraInput = document.getElementById("cameraInput");
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (participant) {
+        homePage.classList.add("hidden");
+        tabs.classList.remove("hidden");
+        document.getElementById("welcomeName").textContent = `Welcome, ${participant.name}!`;
+        renderHuntList();
+        updateProgress();
+        await refreshData();
+      }
+    });
+
+    async function joinGame() {
+      const name = document.getElementById("participantName").value.trim();
+      if (!name) {
+        alert("Please enter your name first.");
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("participants")
+        .insert({ name })
+        .select()
+        .single();
+
+      if (error) {
+        alert("Could not join. Check your Supabase setup.");
+        console.error(error);
+        return;
+      }
+
+      participant = data;
+      localStorage.setItem("gradParticipant", JSON.stringify(participant));
+      homePage.classList.add("hidden");
+      tabs.classList.remove("hidden");
+      document.getElementById("welcomeName").textContent = `Welcome, ${participant.name}!`;
+      renderHuntList();
+      updateProgress();
+      showPage("hunt");
+    }
+
+    function renderHuntList() {
+      const list = document.getElementById("huntList");
+      list.innerHTML = "";
+
+      challenges.forEach((text, index) => {
+        const done = completed.includes(index);
+        const item = document.createElement("div");
+        item.className = `hunt-item ${done ? "done" : ""}`;
+        item.onclick = () => openCamera(index);
+        item.innerHTML = `
+          <div class="check">${done ? "✓" : ""}</div>
+          <div>
+            <strong>${text}</strong>
+            <div class="small">${done ? "Uploaded" : "Tap to take photo"}</div>
+          </div>
+          <div class="camera-icon">📷</div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function openCamera(index) {
+      if (!participant) return;
+      selectedChallengeIndex = index;
+      cameraInput.value = "";
+      cameraInput.click();
+    }
+
+    cameraInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file || selectedChallengeIndex === null) return;
+      await uploadPhoto(file, selectedChallengeIndex);
+    });
+
+    async function uploadPhoto(file, challengeIndex) {
+      const challengeText = challenges[challengeIndex];
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const fileName = `${participant.id}/${Date.now()}-${challengeIndex}.${fileExt}`;
+
+      const { error: uploadError } = await supabaseClient.storage
+        .from(STORAGE_BUCKET)
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) {
+        alert("Photo upload failed. Check the storage bucket settings.");
+        console.error(uploadError);
+        return;
+      }
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(fileName);
+
+      const imageUrl = publicUrlData.publicUrl;
+
+      const { error: submitError } = await supabaseClient
+        .from("submissions")
+        .upsert({
+          participant_id: participant.id,
+          participant_name: participant.name,
+          challenge_index: challengeIndex,
+          challenge_text: challengeText,
+          image_url: imageUrl
+        }, { onConflict: "participant_id,challenge_index" });
+
+      if (submitError) {
+        alert("Photo saved, but progress could not be updated.");
+        console.error(submitError);
+        return;
+      }
+
+      if (!completed.includes(challengeIndex)) completed.push(challengeIndex);
+      localStorage.setItem("gradCompleted", JSON.stringify(completed));
+
+      renderHuntList();
+      updateProgress();
+      await refreshData();
+      alert("Photo uploaded!");
+    }
+
+    function updateProgress() {
+      const total = challenges.length;
+      const done = completed.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("progressBar").style.width = `${percent}%`;
+      document.getElementById("progressText").textContent = `${done}/${total} complete`;
+    }
+
+    function showPage(page) {
+      huntPage.classList.toggle("hidden", page !== "hunt");
+      galleryPage.classList.toggle("hidden", page !== "gallery");
+      leaderboardPage.classList.toggle("hidden", page !== "leaderboard");
+
+      document.getElementById("tabHunt").classList.toggle("active", page === "hunt");
+      document.getElementById("tabGallery").classList.toggle("active", page === "gallery");
+      document.getElementById("tabLeaderboard").classList.toggle("active", page === "leaderboard");
+
+      refreshData();
+    }
+
+    async function refreshData() {
+      await Promise.all([loadGallery(), loadLeaderboard(), syncCompletedFromServer()]);
+    }
+
+    async function syncCompletedFromServer() {
+      if (!participant) return;
+
+      const { data, error } = await supabaseClient
+        .from("submissions")
+        .select("challenge_index")
+        .eq("participant_id", participant.id);
+
+      if (!error && data) {
+        completed = data.map(row => row.challenge_index);
+        localStorage.setItem("gradCompleted", JSON.stringify(completed));
+        renderHuntList();
+        updateProgress();
+      }
+    }
+
+    async function loadGallery() {
+      const grid = document.getElementById("galleryGrid");
+      if (!grid) return;
+
+      const { data, error } = await supabaseClient
+        .from("submissions")
+        .select("participant_name, challenge_text, image_url, created_at")
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+      if (error) {
+        grid.innerHTML = `<div class="card small">Gallery could not load yet.</div>`;
+        return;
+      }
+
+      if (!data.length) {
+        grid.innerHTML = `<div class="card small">No photos uploaded yet.</div>`;
+        return;
+      }
+
+      grid.innerHTML = data.map(photo => `
+        <div class="photo-card">
+          <img src="${photo.image_url}" alt="${photo.challenge_text}">
+          <div class="photo-meta">
+            <strong>${photo.challenge_text}</strong><br>
+            <span class="small">by ${photo.participant_name}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function loadLeaderboard() {
+      const board = document.getElementById("leaderboard");
+      if (!board) return;
+
+      const { data: players, error: playerError } = await supabaseClient
+        .from("participants")
+        .select("id, name, joined_at")
+        .order("joined_at", { ascending: true });
+
+      const { data: submissions, error: subError } = await supabaseClient
+        .from("submissions")
+        .select("participant_id, challenge_index");
+
+      if (playerError || subError) {
+        board.innerHTML = `<div class="small">Players could not load yet.</div>`;
+        return;
+      }
+
+      const counts = {};
+      submissions.forEach(s => {
+        if (!counts[s.participant_id]) counts[s.participant_id] = new Set();
+        counts[s.participant_id].add(s.challenge_index);
+      });
+
+      const rows = players.map(player => {
+        const count = counts[player.id] ? counts[player.id].size : 0;
+        return { name: player.name, count };
+      }).sort((a, b) => b.count - a.count);
+
+      if (!rows.length) {
+        board.innerHTML = `<div class="small">No one has joined yet.</div>`;
+        return;
+      }
+
+      board.innerHTML = rows.map(row => `
+        <div class="leader-row">
+          <strong>${row.name}</strong>
+          <span class="pill">${row.count}/${challenges.length}</span>
+        </div>
+      `).join("");
+    }
+  </script>
+</body>
+</html>
