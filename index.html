@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jadyn's Graduation Scavenger Hunt</title>
+<title>Graduation Scavenger Hunt</title>
 
 <style>
 :root{
@@ -41,15 +41,6 @@ main{
 .logo img{
  width:125px;
  max-width:38vw;
-}
-
-.watermark{
- position:fixed;
- right:18px;
- bottom:82px;
- width:90px;
- opacity:.08;
- pointer-events:none;
 }
 
 .hero{
@@ -252,6 +243,12 @@ button.danger{
  font-size:12px;
 }
 
+.photo-meta button{
+ padding:10px;
+ font-size:13px;
+ margin-top:8px;
+}
+
 .bottom-nav{
  position:fixed;
  bottom:0;
@@ -332,8 +329,6 @@ button.danger{
 
 <body>
 
-<img src="logo.png" class="watermark" alt="Logo">
-
 <main>
 
  <div class="logo">
@@ -341,7 +336,7 @@ button.danger{
  </div>
 
  <div class="hero">
-  <h1>Jadyn's Graduation <span>Scavenger Hunt</span></h1>
+  <h1>Graduation <span>Scavenger Hunt</span></h1>
   <p>Take photos, complete the list, and share the memories.</p>
  </div>
 
@@ -373,7 +368,7 @@ button.danger{
  <section id="photosPage" class="hidden">
   <div class="card">
    <h2>Photos</h2>
-   <p>Tap a photo to open it. Swipe left or right to browse.</p>
+   <p>Tap a photo to open it. Swipe left or right to browse. Use the save button to download or save photos to your camera roll.</p>
   </div>
 
   <div id="gallery"></div>
@@ -740,12 +735,56 @@ function renderGallery() {
    <div class="photo-meta">
     <strong>${escapeHtml(p.playerName || "Guest")}</strong><br>
     ${escapeHtml(p.challengeText || "Photo")}
+    <button class="secondary download-photo-btn" data-photo-index="${index}">
+     Download / Save Photo
+    </button>
    </div>
   `;
 
   div.querySelector("img").addEventListener("click", () => openLightbox(index));
+
+  div.querySelector(".download-photo-btn").addEventListener("click", e => {
+   e.stopPropagation();
+   downloadPhoto(index);
+  });
+
   gallery.appendChild(div);
  });
+}
+
+async function downloadPhoto(index) {
+ const photo = photos[index];
+ if (!photo || !photo.url) return;
+
+ try {
+  const response = await fetch(photo.url);
+  const blob = await response.blob();
+
+  const filename = `jadyn-grad-photo-${index + 1}.jpg`;
+  const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+   await navigator.share({
+    files: [file],
+    title: "Jadyn Graduation Photo",
+    text: "Save this photo to your camera roll."
+   });
+   return;
+  }
+
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(objectUrl);
+
+ } catch (err) {
+  console.error(err);
+  alert("Could not download this photo. Try opening it and saving it manually.");
+ }
 }
 
 function renderLeaderboard() {
