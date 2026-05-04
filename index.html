@@ -137,6 +137,12 @@
       border: 1px solid #ffd0d0;
     }
 
+    button.small-btn {
+      padding: 9px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
     .hidden { display: none !important; }
 
     .tabs {
@@ -274,6 +280,10 @@
       font-size: 12px;
     }
 
+    .photo-actions {
+      padding: 0 8px 8px;
+    }
+
     .leader-row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -303,6 +313,34 @@
     .loading {
       opacity: .65;
       pointer-events: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .42);
+      display: grid;
+      place-items: end center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal {
+      width: min(100%, 520px);
+      background: white;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+
+    .modal h3 {
+      margin: 0 0 6px;
+    }
+
+    .modal-buttons {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
     }
   </style>
 </head>
@@ -340,7 +378,7 @@
       </div>
 
       <div class="notice">
-        Tap a challenge to open your camera. After you take or choose a picture, it uploads to Firebase Storage and updates the shared pages.
+        Tap a challenge, then choose whether to take a new photo or upload one from your camera roll.
       </div>
 
       <div id="huntList" class="hunt-list"></div>
@@ -349,7 +387,7 @@
     <section id="galleryPage" class="hidden">
       <div class="card">
         <h2>Shared Photos</h2>
-        <p class="small">Photos uploaded by everyone playing.</p>
+        <p class="small">Photos uploaded by everyone playing. You can delete your own uploads.</p>
       </div>
       <div id="galleryGrid" class="gallery-grid"></div>
     </section>
@@ -369,7 +407,20 @@
     <button id="tabLeaderboard">Players</button>
   </nav>
 
+  <div id="photoChoiceModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <h3 id="modalChallengeTitle">Choose photo</h3>
+      <p class="small">Take a new picture or upload one from your camera roll.</p>
+      <div class="modal-buttons">
+        <button id="takePhotoButton">Take Photo</button>
+        <button id="cameraRollButton" class="secondary">Upload From Camera Roll</button>
+        <button id="cancelPhotoButton" class="danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
+  <input id="cameraRollInput" class="hidden" type="file" accept="image/*" />
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -380,13 +431,16 @@
       update,
       push,
       onValue,
+      get,
+      remove,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
     import {
       getStorage,
       ref as storageRef,
       uploadBytes,
-      getDownloadURL
+      getDownloadURL,
+      deleteObject
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
     /**************************************************************
@@ -398,12 +452,6 @@
      *
      * Replace apiKey, messagingSenderId, and appId with the values from:
      * Firebase Console → Project Settings → General → Your Apps → Web App
-     *
-     * Your Realtime Database URL from your screenshot is:
-     * https://jadyngrad-975d6-default-rtdb.firebaseio.com
-     *
-     * Your Storage bucket from your screenshot is:
-     * jadyngrad-975d6.firebasestorage.app
      **************************************************************/
 
     const firebaseConfig = {
@@ -451,12 +499,18 @@
     const leaderboardPage = document.getElementById("leaderboardPage");
     const tabs = document.getElementById("tabs");
     const cameraInput = document.getElementById("cameraInput");
+    const cameraRollInput = document.getElementById("cameraRollInput");
     const startButton = document.getElementById("startButton");
     const viewPhotosButton = document.getElementById("viewPhotosButton");
     const resetButton = document.getElementById("resetButton");
     const tabHunt = document.getElementById("tabHunt");
     const tabGallery = document.getElementById("tabGallery");
     const tabLeaderboard = document.getElementById("tabLeaderboard");
+    const photoChoiceModal = document.getElementById("photoChoiceModal");
+    const modalChallengeTitle = document.getElementById("modalChallengeTitle");
+    const takePhotoButton = document.getElementById("takePhotoButton");
+    const cameraRollButton = document.getElementById("cameraRollButton");
+    const cancelPhotoButton = document.getElementById("cancelPhotoButton");
 
     startButton.addEventListener("click", joinGame);
     viewPhotosButton.addEventListener("click", () => showPage("gallery"));
@@ -465,11 +519,35 @@
     tabGallery.addEventListener("click", () => showPage("gallery"));
     tabLeaderboard.addEventListener("click", () => showPage("leaderboard"));
 
+    takePhotoButton.addEventListener("click", () => {
+      closePhotoChoice();
+      cameraInput.value = "";
+      cameraInput.click();
+    });
+
+    cameraRollButton.addEventListener("click", () => {
+      closePhotoChoice();
+      cameraRollInput.value = "";
+      cameraRollInput.click();
+    });
+
+    cancelPhotoButton.addEventListener("click", closePhotoChoice);
+
+    photoChoiceModal.addEventListener("click", (event) => {
+      if (event.target === photoChoiceModal) closePhotoChoice();
+    });
+
     document.getElementById("participantName").addEventListener("keydown", (event) => {
       if (event.key === "Enter") joinGame();
     });
 
     cameraInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file || selectedChallengeIndex === null || isUploading) return;
+      await uploadPhoto(file, selectedChallengeIndex);
+    });
+
+    cameraRollInput.addEventListener("change", async (event) => {
       const file = event.target.files[0];
       if (!file || selectedChallengeIndex === null || isUploading) return;
       await uploadPhoto(file, selectedChallengeIndex);
@@ -482,6 +560,8 @@
         enterGame();
       }
     });
+
+    window.deletePhoto = deletePhoto;
 
     function showError(message) {
       errorBox.textContent = message;
@@ -583,13 +663,13 @@
         const done = participant && participant.completed && participant.completed.includes(index);
         const item = document.createElement("div");
         item.className = `hunt-item ${done ? "done" : ""}`;
-        item.addEventListener("click", () => openCamera(index));
+        item.addEventListener("click", () => openPhotoChoice(index));
 
         item.innerHTML = `
           <div class="check">${done ? "✓" : ""}</div>
           <div>
             <strong>${escapeHtml(text)}</strong>
-            <div class="small">${done ? "Completed" : "Tap to take photo"}</div>
+            <div class="small">${done ? "Completed — tap to add another" : "Tap to add photo"}</div>
           </div>
           <div class="camera-icon">📷</div>
         `;
@@ -598,11 +678,15 @@
       });
     }
 
-    function openCamera(index) {
+    function openPhotoChoice(index) {
       if (!participant) return;
       selectedChallengeIndex = index;
-      cameraInput.value = "";
-      cameraInput.click();
+      modalChallengeTitle.textContent = challenges[index];
+      photoChoiceModal.classList.remove("hidden");
+    }
+
+    function closePhotoChoice() {
+      photoChoiceModal.classList.add("hidden");
     }
 
     async function uploadPhoto(file, challengeIndex) {
@@ -655,6 +739,65 @@
       }
     }
 
+    async function deletePhoto(photoId) {
+      clearError();
+
+      const photo = photos.find(item => item.id === photoId);
+      if (!photo) {
+        alert("Photo not found.");
+        return;
+      }
+
+      if (!participant || photo.participantId !== participant.id) {
+        alert("You can only delete photos uploaded from this device/player.");
+        return;
+      }
+
+      if (!confirm("Delete this photo?")) return;
+
+      document.body.classList.add("loading");
+
+      try {
+        if (photo.storagePath) {
+          await deleteObject(storageRef(storage, photo.storagePath));
+        }
+
+        await remove(dbRef(database, `photos/${photoId}`));
+
+        await recalculateParticipantProgress(photo.participantId);
+
+        alert("Photo deleted.");
+      } catch (error) {
+        console.error(error);
+        showError("Delete failed. Check Firebase Storage rules and Realtime Database rules.");
+        alert("Delete failed. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function recalculateParticipantProgress(participantId) {
+      const snapshot = await get(dbRef(database, "photos"));
+      const value = snapshot.val() || {};
+
+      const remainingChallengeIndexes = Object.values(value)
+        .filter(photo => photo.participantId === participantId)
+        .map(photo => photo.challengeIndex);
+
+      const uniqueCompleted = [...new Set(remainingChallengeIndexes)];
+
+      await update(dbRef(database, `participants/${participantId}`), {
+        completed: uniqueCompleted
+      });
+
+      if (participant && participant.id === participantId) {
+        participant.completed = uniqueCompleted;
+        localStorage.setItem("gradParticipant", JSON.stringify(participant));
+        renderHuntList();
+        updateProgress();
+      }
+    }
+
     function updateProgress() {
       const total = challenges.length;
       const done = participant && participant.completed ? participant.completed.length : 0;
@@ -673,15 +816,23 @@
         return;
       }
 
-      grid.innerHTML = photos.map(photo => `
-        <div class="photo-card">
-          <img src="${escapeHtml(photo.imageUrl || "")}" alt="${escapeHtml(photo.challengeText || "Photo")}">
-          <div class="photo-meta">
-            <strong>${escapeHtml(photo.challengeText || "Photo")}</strong><br>
-            <span class="small">by ${escapeHtml(photo.participantName || "Guest")}</span>
+      grid.innerHTML = photos.map(photo => {
+        const canDelete = participant && photo.participantId === participant.id;
+        return `
+          <div class="photo-card">
+            <img src="${escapeHtml(photo.imageUrl || "")}" alt="${escapeHtml(photo.challengeText || "Photo")}">
+            <div class="photo-meta">
+              <strong>${escapeHtml(photo.challengeText || "Photo")}</strong><br>
+              <span class="small">by ${escapeHtml(photo.participantName || "Guest")}</span>
+            </div>
+            ${canDelete ? `
+              <div class="photo-actions">
+                <button class="danger small-btn" onclick="deletePhoto('${escapeHtml(photo.id)}')">Delete Photo</button>
+              </div>
+            ` : ""}
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
     }
 
     function renderLeaderboard() {
@@ -736,6 +887,7 @@
       homePage.classList.remove("hidden");
       document.getElementById("participantName").value = "";
       updateProgress();
+      renderGallery();
     }
 
     function escapeHtml(value) {
