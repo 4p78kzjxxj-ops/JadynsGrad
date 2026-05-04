@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jadyn's Graduation Scavenger Hunt</title>
+<title>Graduation Scavenger Hunt</title>
 
 <style>
 :root{
@@ -41,6 +41,15 @@ main{
 .logo img{
  width:125px;
  max-width:38vw;
+}
+
+.watermark{
+ position:fixed;
+ right:18px;
+ bottom:82px;
+ width:90px;
+ opacity:.08;
+ pointer-events:none;
 }
 
 .hero{
@@ -243,19 +252,13 @@ button.danger{
  font-size:12px;
 }
 
-.photo-meta button{
- padding:10px;
- font-size:13px;
- margin-top:8px;
-}
-
 .bottom-nav{
  position:fixed;
  bottom:0;
  left:0;
  right:0;
  display:grid;
- grid-template-columns:1fr 1fr 1fr;
+ grid-template-columns:1fr 1fr;
  gap:10px;
  background:white;
  border-top:1px solid #dbe3ff;
@@ -329,6 +332,8 @@ button.danger{
 
 <body>
 
+<img src="logo.png" class="watermark" alt="Logo">
+
 <main>
 
  <div class="logo">
@@ -336,7 +341,7 @@ button.danger{
  </div>
 
  <div class="hero">
-  <h1>Jadyn's Graduation <span>Scavenger Hunt</span></h1>
+  <h1>Graduation <span>Scavenger Hunt</span></h1>
   <p>Take photos, complete the list, and share the memories.</p>
  </div>
 
@@ -368,19 +373,11 @@ button.danger{
  <section id="photosPage" class="hidden">
   <div class="card">
    <h2>Photos</h2>
-   <p>Tap a photo to open it. Swipe left or right to browse. Use the save button to download or save photos to your camera roll.</p>
+   <p>Tap a photo to open it. Swipe left or right to browse.</p>
+   <p style="font-size:13px;color:var(--muted);margin-bottom:0;">To save a photo: tap it to open, then press and hold the image and choose “Save to Photos” or “Add to Photos.”</p>
   </div>
 
   <div id="gallery"></div>
- </section>
-
- <section id="leaderboardPage" class="hidden">
-  <div class="card">
-   <h2>Leaderboard</h2>
-   <p>Live rankings based on completed photo challenges.</p>
-  </div>
-
-  <div id="leaderboardList"></div>
  </section>
 
 </main>
@@ -388,7 +385,6 @@ button.danger{
 <nav id="bottomNav" class="bottom-nav hidden">
  <button id="huntNav">Hunt</button>
  <button id="photosNav" class="secondary">Photos</button>
- <button id="leaderboardNav" class="secondary">Leaderboard</button>
 </nav>
 
 <div id="photoModal" class="modal-backdrop hidden">
@@ -456,11 +452,9 @@ let touchStartX = 0;
 const homePage = document.getElementById("homePage");
 const huntPage = document.getElementById("huntPage");
 const photosPage = document.getElementById("photosPage");
-const leaderboardPage = document.getElementById("leaderboardPage");
 const bottomNav = document.getElementById("bottomNav");
 const huntList = document.getElementById("huntList");
 const gallery = document.getElementById("gallery");
-const leaderboardList = document.getElementById("leaderboardList");
 const photoModal = document.getElementById("photoModal");
 const cameraInput = document.getElementById("cameraInput");
 const rollInput = document.getElementById("rollInput");
@@ -468,7 +462,6 @@ const rollInput = document.getElementById("rollInput");
 document.getElementById("startBtn").addEventListener("click", join);
 document.getElementById("huntNav").addEventListener("click", showHunt);
 document.getElementById("photosNav").addEventListener("click", showPhotos);
-document.getElementById("leaderboardNav").addEventListener("click", showLeaderboard);
 
 document.getElementById("takePhotoBtn").addEventListener("click", () => {
  closeModal();
@@ -518,14 +511,12 @@ if (player) {
 
 onValue(ref(db, "photos"), snap => {
  const val = snap.val() || {};
-
  photos = Object.entries(val)
   .map(([id, v]) => ({ id, ...v }))
   .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
  renderGallery();
  renderHunt();
- renderLeaderboard();
 });
 
 async function join() {
@@ -548,7 +539,6 @@ async function join() {
   await set(ref(db, "players/" + id), player);
   localStorage.setItem("gradPlayer", JSON.stringify(player));
   enterApp();
-
  } catch (err) {
   console.error(err);
   alert("Start failed. Check Firebase rules/config.");
@@ -562,7 +552,6 @@ function enterApp() {
  showHunt();
  renderHunt();
  renderGallery();
- renderLeaderboard();
 }
 
 function renderHunt() {
@@ -670,8 +659,6 @@ async function uploadPhoto(file) {
   }
 
   renderHunt();
-  renderLeaderboard();
-
  } catch (err) {
   console.error(err);
   alert("Upload failed. Check Firebase Storage rules.");
@@ -694,7 +681,6 @@ async function deletePhoto(photoId) {
 
   await remove(ref(db, "photos/" + p.id));
   await recalculateProgress();
-
  } catch (err) {
   console.error(err);
   alert("Delete failed.");
@@ -713,9 +699,7 @@ async function recalculateProgress() {
 
  await update(ref(db, "players/" + player.id), { completed: player.completed });
  localStorage.setItem("gradPlayer", JSON.stringify(player));
-
  renderHunt();
- renderLeaderboard();
 }
 
 function renderGallery() {
@@ -735,140 +719,26 @@ function renderGallery() {
    <div class="photo-meta">
     <strong>${escapeHtml(p.playerName || "Guest")}</strong><br>
     ${escapeHtml(p.challengeText || "Photo")}
-    <button class="secondary download-photo-btn" data-photo-index="${index}">
-     Download / Save Photo
-    </button>
    </div>
   `;
 
   div.querySelector("img").addEventListener("click", () => openLightbox(index));
-
-  div.querySelector(".download-photo-btn").addEventListener("click", e => {
-   e.stopPropagation();
-   downloadPhoto(index);
-  });
-
   gallery.appendChild(div);
- });
-}
-
-async function downloadPhoto(index) {
- const photo = photos[index];
- if (!photo || !photo.url) return;
-
- try {
-  const response = await fetch(photo.url);
-  const blob = await response.blob();
-
-  const filename = `jadyn-grad-photo-${index + 1}.jpg`;
-  const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
-
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-   await navigator.share({
-    files: [file],
-    title: "Jadyn Graduation Photo",
-    text: "Save this photo to your camera roll."
-   });
-   return;
-  }
-
-  const objectUrl = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = objectUrl;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(objectUrl);
-
- } catch (err) {
-  console.error(err);
-  alert("Could not download this photo. Try opening it and saving it manually.");
- }
-}
-
-function renderLeaderboard() {
- leaderboardList.innerHTML = "";
-
- if (!photos.length) {
-  leaderboardList.innerHTML = `<div class="empty">No scores yet.</div>`;
-  return;
- }
-
- const scores = {};
-
- photos.forEach(p => {
-  const id = p.playerId || p.playerName || "guest";
-
-  if (!scores[id]) {
-   scores[id] = {
-    name: p.playerName || "Guest",
-    completed: new Set(),
-    photoCount: 0,
-    latest: 0
-   };
-  }
-
-  scores[id].completed.add(Number(p.challenge));
-  scores[id].photoCount++;
-  scores[id].latest = Math.max(scores[id].latest, p.createdAt || 0);
- });
-
- const leaders = Object.values(scores).sort((a, b) => {
-  if (b.completed.size !== a.completed.size) return b.completed.size - a.completed.size;
-  if (b.photoCount !== a.photoCount) return b.photoCount - a.photoCount;
-  return a.latest - b.latest;
- });
-
- leaders.forEach((entry, index) => {
-  const div = document.createElement("div");
-  div.className = "card";
-
-  div.innerHTML = `
-   <div class="progress-row">
-    <div><strong>#${index + 1} ${escapeHtml(entry.name)}</strong></div>
-    <div>${entry.completed.size}/${challenges.length}</div>
-   </div>
-   <div class="progress-track">
-    <div style="height:100%;width:${(entry.completed.size / challenges.length) * 100}%;background:linear-gradient(90deg,var(--gold),var(--success));"></div>
-   </div>
-   <p>${entry.photoCount} photo${entry.photoCount === 1 ? "" : "s"} uploaded</p>
-  `;
-
-  leaderboardList.appendChild(div);
  });
 }
 
 function showHunt() {
  photosPage.classList.add("hidden");
- leaderboardPage.classList.add("hidden");
  huntPage.classList.remove("hidden");
-
  document.getElementById("huntNav").classList.remove("secondary");
  document.getElementById("photosNav").classList.add("secondary");
- document.getElementById("leaderboardNav").classList.add("secondary");
 }
 
 function showPhotos() {
  huntPage.classList.add("hidden");
- leaderboardPage.classList.add("hidden");
  photosPage.classList.remove("hidden");
-
  document.getElementById("photosNav").classList.remove("secondary");
  document.getElementById("huntNav").classList.add("secondary");
- document.getElementById("leaderboardNav").classList.add("secondary");
-}
-
-function showLeaderboard() {
- huntPage.classList.add("hidden");
- photosPage.classList.add("hidden");
- leaderboardPage.classList.remove("hidden");
-
- document.getElementById("leaderboardNav").classList.remove("secondary");
- document.getElementById("huntNav").classList.add("secondary");
- document.getElementById("photosNav").classList.add("secondary");
-
- renderLeaderboard();
 }
 
 function openLightbox(index) {
