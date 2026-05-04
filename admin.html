@@ -1,79 +1,520 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin</title>
-<style>
-body{font-family:Arial; padding:20px;}
-button{padding:10px; margin:5px;}
-.danger{background:red;color:white;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graduation Hunt Admin</title>
+  <style>
+    :root {
+      --blue: #3d8fc5;
+      --dark-blue: #123d5c;
+      --bg: #f5f8fb;
+      --text: #16202a;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --red: #c0392b;
+      --green: #1f9d55;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eaf5ff 0%, var(--bg) 45%, #ffffff 100%);
+      color: var(--text);
+    }
+
+    header {
+      padding: 22px 18px 12px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--dark-blue);
+      font-size: clamp(30px, 8vw, 46px);
+    }
+
+    main {
+      width: min(100%, 720px);
+      margin: 0 auto;
+      padding: 12px 16px 40px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 12px 35px rgba(18, 61, 92, 0.12);
+      border: 1px solid rgba(18, 61, 92, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 13px 16px;
+      font-size: 16px;
+      font-weight: 800;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button.danger {
+      background: #fff0f0;
+      color: var(--red);
+      border: 1px solid #ffd0d0;
+    }
+
+    button.secondary {
+      background: #eef5fb;
+      color: var(--dark-blue);
+      border: 1px solid rgba(18, 61, 92, .1);
+    }
+
+    button.small-btn {
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: #eef5fb;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      color: var(--dark-blue);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .photo-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e3e9f0;
+      box-shadow: 0 6px 16px rgba(18, 61, 92, .08);
+    }
+
+    .photo-card img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      display: block;
+      background: #eef5fb;
+    }
+
+    .photo-meta {
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .photo-actions {
+      padding: 0 8px 8px;
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .player-row:last-child { border-bottom: 0; }
+
+    .pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef5fb;
+      color: var(--dark-blue);
+      font-weight: 800;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .error-box {
+      padding: 12px;
+      background: #fff0f0;
+      border: 1px solid #ffd0d0;
+      color: #8a1f11;
+      border-radius: 14px;
+      font-size: 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .loading {
+      opacity: .65;
+      pointer-events: none;
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <h1>Graduation Hunt Admin</h1>
+    <p class="small">Delete photos, players, or wipe the whole hunt.</p>
+  </header>
 
-<h2>Admin Panel</h2>
+  <main>
+    <div id="errorBox" class="error-box"></div>
 
-<button class="danger" onclick="deleteAll()">Delete Everything</button>
+    <section class="card">
+      <h2>Admin Actions</h2>
+      <div class="stat-grid">
+        <div class="stat"><strong id="playerCount">0</strong><span class="small">Players</span></div>
+        <div class="stat"><strong id="photoCount">0</strong><span class="small">Photos</span></div>
+        <div class="stat"><strong id="uploadCount">0</strong><span class="small">Uploads</span></div>
+      </div>
+      <br>
+      <div class="two">
+        <button class="danger" id="deleteAllPhotosButton">Delete All Photos</button>
+        <button class="danger" id="deleteAllPlayersButton">Delete All Players</button>
+      </div>
+      <br>
+      <button class="danger" id="deleteEverythingButton">Delete Everything</button>
+      <br><br>
+      <button class="secondary" onclick="location.href='index.html'">Back to Hunt</button>
+    </section>
 
-<h3>Photos</h3>
-<div id="photos"></div>
+    <section class="card">
+      <h2>Players</h2>
+      <div id="playersList" class="grid"></div>
+    </section>
 
-<script type="module">
+    <section class="card">
+      <h2>Photos</h2>
+      <div id="photosGrid" class="photo-grid"></div>
+    </section>
+  </main>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-import { getStorage, ref as sRef, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getDatabase,
+      ref as dbRef,
+      onValue,
+      get,
+      remove,
+      update
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+    import {
+      getStorage,
+      ref as storageRef,
+      deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "YOUR_DB_URL",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_ID",
-  appId: "YOUR_APP_ID"
-};
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY_HERE",
+      authDomain: "jadyngrad-975d6.firebaseapp.com",
+      databaseURL: "https://jadyngrad-975d6-default-rtdb.firebaseio.com",
+      projectId: "jadyngrad-975d6",
+      storageBucket: "jadyngrad-975d6.firebasestorage.app",
+      messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
+      appId: "PASTE_YOUR_APP_ID_HERE"
+    };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const storage = getStorage(app);
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const storage = getStorage(app);
 
-let photos=[];
+    const ADMIN_PIN = "2026";
+    const TOTAL_CHALLENGES = 15;
 
-onValue(ref(db,"photos"),snap=>{
-  const val=snap.val()||{};
-  photos = Object.entries(val).map(([id,v])=>({id,...v}));
-  render();
-});
+    const enteredPin = prompt("Enter admin PIN:");
+    if (enteredPin !== ADMIN_PIN) {
+      document.body.innerHTML = "<main><section class='card'><h2>Access denied</h2></section></main>";
+      throw new Error("Access denied");
+    }
 
-function render(){
-  const div=document.getElementById("photos");
-  div.innerHTML="";
-  photos.forEach(p=>{
-    const el=document.createElement("div");
-    el.innerHTML=`<img src="${p.url}" width=100><button onclick="del('${p.id}','${p.path}')">Delete</button>`;
-    div.appendChild(el);
-  });
-}
+    let players = [];
+    let photos = [];
 
-window.del = function(id,path){
-  deleteObject(sRef(storage,path));
-  remove(ref(db,"photos/"+id));
-}
+    const errorBox = document.getElementById("errorBox");
+    const playerCount = document.getElementById("playerCount");
+    const photoCount = document.getElementById("photoCount");
+    const uploadCount = document.getElementById("uploadCount");
+    const playersList = document.getElementById("playersList");
+    const photosGrid = document.getElementById("photosGrid");
 
-window.deleteAll = function(){
-  if(!confirm("Delete EVERYTHING?")) return;
+    document.getElementById("deleteAllPhotosButton").addEventListener("click", deleteAllPhotos);
+    document.getElementById("deleteAllPlayersButton").addEventListener("click", deleteAllPlayers);
+    document.getElementById("deleteEverythingButton").addEventListener("click", deleteEverything);
 
-  photos.forEach(p=>{
-    deleteObject(sRef(storage,p.path));
-  });
+    window.deleteOnePhoto = deleteOnePhoto;
+    window.deleteOnePlayer = deleteOnePlayer;
 
-  remove(ref(db,"photos"));
-  remove(ref(db,"players"));
-}
+    startLiveListeners();
 
-</script>
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.style.display = "block";
+      console.error(message);
+    }
 
+    function clearError() {
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function startLiveListeners() {
+      onValue(dbRef(database, "participants"), (snapshot) => {
+        const value = snapshot.val() || {};
+        players = Object.entries(value).map(([id, data]) => ({
+          id,
+          ...data,
+          completed: Array.isArray(data.completed) ? data.completed : []
+        }));
+        render();
+      }, (error) => {
+        showError("Could not read players. Check Realtime Database rules.");
+        console.error(error);
+      });
+
+      onValue(dbRef(database, "photos"), (snapshot) => {
+        const value = snapshot.val() || {};
+        photos = Object.entries(value).map(([id, data]) => ({
+          id,
+          ...data
+        })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        render();
+      }, (error) => {
+        showError("Could not read photos. Check Realtime Database rules.");
+        console.error(error);
+      });
+    }
+
+    function render() {
+      playerCount.textContent = players.length;
+      photoCount.textContent = photos.length;
+      uploadCount.textContent = photos.length;
+
+      renderPlayers();
+      renderPhotos();
+    }
+
+    function renderPlayers() {
+      if (!players.length) {
+        playersList.innerHTML = `<div class="small">No players yet.</div>`;
+        return;
+      }
+
+      const sortedPlayers = [...players].sort((a, b) => {
+        const aCount = Array.isArray(a.completed) ? a.completed.length : 0;
+        const bCount = Array.isArray(b.completed) ? b.completed.length : 0;
+        return bCount - aCount;
+      });
+
+      playersList.innerHTML = sortedPlayers.map(player => {
+        const completedCount = Array.isArray(player.completed) ? player.completed.length : 0;
+        const playerPhotos = photos.filter(photo => photo.participantId === player.id).length;
+        return `
+          <div class="player-row">
+            <div>
+              <strong>${escapeHtml(player.name || "Guest")}</strong><br>
+              <span class="small">${completedCount}/${TOTAL_CHALLENGES} complete · ${playerPhotos} photos</span>
+            </div>
+            <div style="display:grid; gap:6px;">
+              <span class="pill">${completedCount}/${TOTAL_CHALLENGES}</span>
+              <button class="danger small-btn" onclick="deleteOnePlayer('${escapeHtml(player.id)}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderPhotos() {
+      if (!photos.length) {
+        photosGrid.innerHTML = `<div class="small">No photos yet.</div>`;
+        return;
+      }
+
+      photosGrid.innerHTML = photos.map(photo => `
+        <div class="photo-card">
+          <img src="${escapeHtml(photo.imageUrl || "")}" alt="${escapeHtml(photo.challengeText || "Photo")}">
+          <div class="photo-meta">
+            <strong>${escapeHtml(photo.challengeText || "Photo")}</strong><br>
+            <span class="small">by ${escapeHtml(photo.participantName || "Guest")}</span>
+          </div>
+          <div class="photo-actions">
+            <button class="danger small-btn" onclick="deleteOnePhoto('${escapeHtml(photo.id)}')">Delete Photo</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function deleteOnePhoto(photoId) {
+      clearError();
+      const photo = photos.find(item => item.id === photoId);
+      if (!photo) return alert("Photo not found.");
+      if (!confirm("Delete this photo?")) return;
+
+      document.body.classList.add("loading");
+      try {
+        await deletePhotoFileIfExists(photo);
+        await remove(dbRef(database, `photos/${photoId}`));
+        await recalculateParticipantProgress(photo.participantId);
+      } catch (error) {
+        console.error(error);
+        showError("Could not delete photo. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function deleteOnePlayer(playerId) {
+      clearError();
+      const player = players.find(item => item.id === playerId);
+      if (!player) return alert("Player not found.");
+      if (!confirm(`Delete ${player.name || "this player"} and all of their photos?`)) return;
+
+      document.body.classList.add("loading");
+      try {
+        const playerPhotos = photos.filter(photo => photo.participantId === playerId);
+
+        for (const photo of playerPhotos) {
+          await deletePhotoFileIfExists(photo);
+          await remove(dbRef(database, `photos/${photo.id}`));
+        }
+
+        await remove(dbRef(database, `participants/${playerId}`));
+      } catch (error) {
+        console.error(error);
+        showError("Could not delete player. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function deleteAllPhotos() {
+      clearError();
+      if (!photos.length) return alert("There are no photos to delete.");
+      if (!confirm("Delete ALL photos? This cannot be undone.")) return;
+
+      document.body.classList.add("loading");
+      try {
+        for (const photo of photos) {
+          await deletePhotoFileIfExists(photo);
+        }
+        await remove(dbRef(database, "photos"));
+
+        const updates = {};
+        players.forEach(player => {
+          updates[`participants/${player.id}/completed`] = [];
+        });
+        await update(dbRef(database), updates);
+      } catch (error) {
+        console.error(error);
+        showError("Could not delete all photos. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function deleteAllPlayers() {
+      clearError();
+      if (!players.length) return alert("There are no players to delete.");
+      if (!confirm("Delete ALL players? Photos will remain unless you delete them separately.")) return;
+
+      document.body.classList.add("loading");
+      try {
+        await remove(dbRef(database, "participants"));
+      } catch (error) {
+        console.error(error);
+        showError("Could not delete all players. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function deleteEverything() {
+      clearError();
+      if (!confirm("Delete ALL photos and ALL players? This cannot be undone.")) return;
+
+      document.body.classList.add("loading");
+      try {
+        for (const photo of photos) {
+          await deletePhotoFileIfExists(photo);
+        }
+        await remove(dbRef(database, "photos"));
+        await remove(dbRef(database, "participants"));
+      } catch (error) {
+        console.error(error);
+        showError("Could not delete everything. Check Firebase rules.");
+      } finally {
+        document.body.classList.remove("loading");
+      }
+    }
+
+    async function deletePhotoFileIfExists(photo) {
+      if (!photo.storagePath) return;
+      try {
+        await deleteObject(storageRef(storage, photo.storagePath));
+      } catch (error) {
+        console.warn("Storage delete warning:", error);
+      }
+    }
+
+    async function recalculateParticipantProgress(participantId) {
+      if (!participantId) return;
+
+      const snapshot = await get(dbRef(database, "photos"));
+      const value = snapshot.val() || {};
+
+      const remainingChallengeIndexes = Object.values(value)
+        .filter(photo => photo.participantId === participantId)
+        .map(photo => Number(photo.challengeIndex));
+
+      const uniqueCompleted = [...new Set(remainingChallengeIndexes)];
+
+      await update(dbRef(database, `participants/${participantId}`), {
+        completed: uniqueCompleted
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
 </body>
 </html>
