@@ -8,189 +8,404 @@
 <style>
 :root{
   --blue:#0a2cff;
+  --blue-dark:#03117a;
   --gold:#ffd400;
   --bg:#f4f7ff;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --danger:#ef4444;
+  --success:#22c55e;
 }
+
+*{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:Arial;
-  background:var(--bg);
+  font-family:Arial, sans-serif;
+  background:linear-gradient(180deg,#ffffff,#f4f7ff);
+  color:var(--text);
 }
 
 main{
-  max-width:600px;
+  max-width:620px;
   margin:auto;
-  padding:20px;
+  padding:18px 16px 90px;
 }
 
-/* Logo */
 .logo{
   text-align:center;
-  margin-bottom:10px;
+  margin:8px 0 10px;
 }
-.logo img{width:120px;}
 
-/* Watermark */
+.logo img{
+  width:125px;
+  max-width:38vw;
+}
+
 .watermark{
   position:fixed;
-  bottom:80px;
-  right:20px;
+  right:18px;
+  bottom:82px;
   width:90px;
   opacity:.08;
   pointer-events:none;
 }
 
-/* Card */
-.card{
-  background:white;
-  padding:20px;
-  border-radius:20px;
-  margin-bottom:15px;
-  border:2px solid var(--blue);
+.hero{
+  text-align:center;
+  margin-bottom:16px;
 }
 
-/* Button */
-button{
+.hero h1{
+  margin:8px 0 6px;
+  color:var(--blue-dark);
+  font-size:38px;
+  line-height:1;
+}
+
+.hero h1 span{
+  color:var(--blue);
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.card{
+  background:var(--card);
+  border:2px solid var(--blue);
+  border-radius:22px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 12px 28px rgba(10,44,255,.12);
+}
+
+input{
   width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:var(--blue);
-  color:white;
-  font-weight:bold;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid #ccd5ff;
+  font-size:17px;
   margin-top:10px;
 }
 
+button{
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:14px;
+  margin-top:10px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
+  font-size:16px;
+  cursor:pointer;
+}
+
 button.secondary{
-  background:#eee;
-  color:#000;
+  background:#eef2ff;
+  color:var(--blue-dark);
 }
 
 button.danger{
-  background:#ff3b30;
+  background:#fee2e2;
+  color:#b91c1c;
 }
 
-/* Hunt */
-.hunt-item{
+.hidden{display:none!important}
+
+.notice{
+  background:#fff7bf;
+  border:1px solid var(--gold);
+  color:#4b3d00;
+  border-radius:16px;
   padding:12px;
-  border:2px solid var(--blue);
-  border-radius:12px;
-  margin-bottom:10px;
+  margin-bottom:14px;
+  font-size:14px;
+}
+
+.progress-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+#welcome{
+  font-size:20px;
+  color:var(--blue-dark);
+  font-weight:bold;
+}
+
+#progressText{
+  background:#fff3a3;
+  border-radius:999px;
+  padding:7px 11px;
+  font-weight:bold;
+}
+
+.progress-track{
+  height:12px;
+  background:#e5eaff;
+  border-radius:999px;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+#progressBar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--gold),var(--success));
+}
+
+.hunt-list{
+  display:grid;
+  gap:12px;
+}
+
+.hunt-item{
+  display:grid;
+  grid-template-columns:32px 1fr 36px;
+  gap:12px;
+  align-items:center;
+  background:white;
+  border:1px solid #ccd5ff;
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 8px 18px rgba(0,0,0,.05);
+  cursor:pointer;
 }
 
 .hunt-item.done{
-  background:#fff4b3;
+  background:#f0fff4;
+  border-color:#86efac;
 }
 
-/* Gallery */
+.check{
+  width:30px;
+  height:30px;
+  border-radius:9px;
+  border:2px solid #b7c3ff;
+  display:grid;
+  place-items:center;
+  font-weight:bold;
+}
+
+.hunt-item.done .check{
+  background:var(--success);
+  border-color:var(--success);
+  color:white;
+}
+
+.hunt-title{
+  font-weight:bold;
+}
+
+.hunt-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.camera{
+  font-size:22px;
+}
+
+.delete-wrap{
+  grid-column:2 / 4;
+  display:grid;
+  gap:8px;
+}
+
+.delete-wrap button{
+  margin:0;
+  padding:10px;
+  font-size:13px;
+}
+
 #gallery{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:12px;
 }
 
-img{
+.photo-card{
+  background:white;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid #dbe3ff;
+  box-shadow:0 8px 18px rgba(0,0,0,.06);
+}
+
+.photo-card img{
   width:100%;
-  border-radius:10px;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
 }
 
-.hidden{display:none}
-
-/* Lightbox */
-#lightbox{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+.photo-meta{
+  padding:9px;
+  font-size:12px;
 }
 
-#lightbox img{
-  max-width:90%;
-  max-height:90%;
-}
-
-#lightbox button{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:40px;
-  background:none;
-}
-
-#lightbox .left{left:10px;}
-#lightbox .right{right:10px;}
-
-/* Bottom Nav */
-.nav{
+.bottom-nav{
   position:fixed;
   bottom:0;
   left:0;
   right:0;
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  background:white;
+  border-top:1px solid #dbe3ff;
+  padding:10px 14px;
 }
 
-.nav button{
-  flex:1;
+.bottom-nav button{
   margin:0;
+}
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:grid;
+  place-items:end center;
+  padding:16px;
+  z-index:1000;
+}
+
+.modal{
+  width:min(100%,520px);
+  background:white;
+  border-radius:24px;
+  padding:18px;
+}
+
+.modal h3{
+  margin:0 0 4px;
+}
+
+#lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.94);
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:12px;
+}
+
+#lightbox.hidden{display:none!important}
+
+#lightbox img{
+  max-width:82vw;
+  max-height:82vh;
+  object-fit:contain;
+  border-radius:12px;
+}
+
+#lightbox button{
+  width:auto;
+  background:transparent;
+  font-size:42px;
+  margin:0;
+  padding:8px;
+}
+
+.empty{
+  grid-column:1 / -1;
+  text-align:center;
+  color:var(--muted);
+  padding:28px;
+  background:white;
+  border-radius:18px;
 }
 </style>
 </head>
 
 <body>
 
-<img src="logo.png" class="watermark">
+<img src="logo.png" class="watermark" alt="Logo">
 
 <main>
+  <div class="logo">
+    <img src="logo.png" alt="Logo">
+  </div>
 
-<div class="logo">
-<img src="logo.png">
-</div>
+  <div class="hero">
+    <h1>Graduation <span>Scavenger Hunt</span></h1>
+    <p>Take photos, complete the list, and share the memories.</p>
+  </div>
 
-<div id="home" class="card">
-<h2>Play Now</h2>
-<input id="name" placeholder="Enter name">
-<button onclick="join()">Start Playing</button>
-</div>
+  <section id="homePage" class="card">
+    <h2>Play Now!</h2>
+    <p>Enter your name to start.</p>
+    <input id="nameInput" placeholder="Enter name" autocomplete="name">
+    <button id="startBtn">Start Playing</button>
+  </section>
 
-<div id="hunt" class="hidden">
-<div class="card">
-<div id="welcome"></div>
-<div id="progress"></div>
-</div>
+  <section id="huntPage" class="hidden">
+    <div class="card">
+      <div class="progress-row">
+        <div id="welcome">Welcome!</div>
+        <div id="progressText">0/0</div>
+      </div>
+      <div class="progress-track">
+        <div id="progressBar"></div>
+      </div>
+    </div>
 
-<div id="list"></div>
-</div>
+    <div class="notice">
+      Tap a challenge to take a photo or upload one from your camera roll. Delete buttons show under your own uploaded items.
+    </div>
 
-<div id="photos" class="hidden">
-<h2>Photos</h2>
-<div id="gallery"></div>
-</div>
+    <div id="huntList" class="hunt-list"></div>
+  </section>
 
+  <section id="photosPage" class="hidden">
+    <div class="card">
+      <h2>Photos</h2>
+      <p>Tap a photo to open it. Swipe left or right to browse.</p>
+    </div>
+    <div id="gallery"></div>
+  </section>
 </main>
 
-<div class="nav hidden" id="nav">
-<button onclick="showHunt()">Hunt</button>
-<button onclick="showPhotos()">Photos</button>
+<nav id="bottomNav" class="bottom-nav hidden">
+  <button id="huntNav">Hunt</button>
+  <button id="photosNav" class="secondary">Photos</button>
+</nav>
+
+<div id="photoModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h3 id="modalTitle">Choose Photo</h3>
+    <p>Take a new photo or upload from your camera roll.</p>
+    <button id="takePhotoBtn">Take Photo</button>
+    <button id="uploadPhotoBtn" class="secondary">Upload From Camera Roll</button>
+    <button id="cancelModalBtn" class="danger">Cancel</button>
+  </div>
 </div>
 
 <div id="lightbox" class="hidden">
-<button class="left" onclick="prev()">‹</button>
-<img id="lightImg">
-<button class="right" onclick="next()">›</button>
+  <button id="prevBtn">‹</button>
+  <img id="lightboxImg" alt="Photo">
+  <button id="nextBtn">›</button>
 </div>
 
-<input id="cam" type="file" accept="image/*" capture="environment" class="hidden">
-<input id="upload" type="file" accept="image/*" class="hidden">
+<input id="cameraInput" type="file" accept="image/*" capture="environment" class="hidden">
+<input id="rollInput" type="file" accept="image/*" class="hidden">
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+import { getDatabase, ref, set, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCAz2tKoSLs1aFhHGvwF0juNYp6BOJ69ZI",
@@ -206,146 +421,337 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-const challenges = ["Jadyn smiling","Selfie","Food table","Group photo"];
+const challenges = [
+  "Jadyn smiling",
+  "Jadyn and his dad",
+  "Jadyn and his mom",
+  "Jadyn and Jenny",
+  "Jadyn and Brian",
+  "Jadyn with sibling(s)",
+  "Jadyn looking surprised",
+  "Jadyn dancing",
+  "Jadyn pointing at something",
+  "The food table",
+  "The dessert",
+  "A selfie",
+  "A selfie with you and Jadyn",
+  "People Gathering",
+  "Your favorite decoration/prop"
+];
 
-let player=null;
-let photos=[];
-let current=null;
-let index=0;
+let player = JSON.parse(localStorage.getItem("gradPlayer") || "null");
+let photos = [];
+let currentChallenge = null;
+let currentPhotoIndex = 0;
+let touchStartX = 0;
 
-function join(){
-  const name=document.getElementById("name").value;
-  if(!name) return alert("Enter name");
+const homePage = document.getElementById("homePage");
+const huntPage = document.getElementById("huntPage");
+const photosPage = document.getElementById("photosPage");
+const bottomNav = document.getElementById("bottomNav");
+const huntList = document.getElementById("huntList");
+const gallery = document.getElementById("gallery");
+const photoModal = document.getElementById("photoModal");
+const cameraInput = document.getElementById("cameraInput");
+const rollInput = document.getElementById("rollInput");
 
-  const id=Date.now().toString();
-  player={id,name,completed:[]};
+document.getElementById("startBtn").addEventListener("click", join);
+document.getElementById("huntNav").addEventListener("click", showHunt);
+document.getElementById("photosNav").addEventListener("click", showPhotos);
+document.getElementById("takePhotoBtn").addEventListener("click", () => {
+  closeModal();
+  cameraInput.value = "";
+  cameraInput.click();
+});
+document.getElementById("uploadPhotoBtn").addEventListener("click", () => {
+  closeModal();
+  rollInput.value = "";
+  rollInput.click();
+});
+document.getElementById("cancelModalBtn").addEventListener("click", closeModal);
+cameraInput.addEventListener("change", e => uploadPhoto(e.target.files[0]));
+rollInput.addEventListener("change", e => uploadPhoto(e.target.files[0]));
 
-  set(ref(db,"players/"+id),player);
+document.getElementById("prevBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  prevPhoto();
+});
+document.getElementById("nextBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  nextPhoto();
+});
+document.getElementById("lightbox").addEventListener("click", closeLightbox);
 
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("hunt").classList.remove("hidden");
-  document.getElementById("nav").classList.remove("hidden");
-
-  document.getElementById("welcome").innerText=name;
-  render();
-}
-
-function render(){
-  const list=document.getElementById("list");
-  list.innerHTML="";
-
-  challenges.forEach((c,i)=>{
-    const done=player.completed.includes(i);
-
-    const div=document.createElement("div");
-    div.className="hunt-item "+(done?"done":"");
-    div.innerHTML=c;
-
-    div.onclick=()=>choose(i);
-
-    const mine=photos.filter(p=>p.playerId===player.id && p.challenge===i);
-
-    mine.forEach(p=>{
-      const btn=document.createElement("button");
-      btn.innerText="Delete";
-      btn.className="danger";
-      btn.onclick=(e)=>{e.stopPropagation();del(p)};
-      div.appendChild(btn);
-    });
-
-    list.appendChild(div);
-  });
-
-  document.getElementById("progress").innerText=
-    player.completed.length+"/"+challenges.length;
-}
-
-function choose(i){
-  current=i;
-  if(confirm("OK = camera, Cancel = upload")){
-    document.getElementById("cam").click();
-  }else{
-    document.getElementById("upload").click();
-  }
-}
-
-document.getElementById("cam").onchange=e=>upload(e.target.files[0]);
-document.getElementById("upload").onchange=e=>upload(e.target.files[0]);
-
-async function upload(file){
-  const path="photos/"+Date.now();
-  const refS=sRef(storage,path);
-
-  await uploadBytes(refS,file);
-  const url=await getDownloadURL(refS);
-
-  const newRef=push(ref(db,"photos"));
-  set(newRef,{
-    playerId:player.id,
-    playerName:player.name,
-    challenge:current,
-    url,
-    path
-  });
-
-  if(!player.completed.includes(current)){
-    player.completed.push(current);
-    update(ref(db,"players/"+player.id),{completed:player.completed});
-  }
-}
-
-function del(p){
-  deleteObject(sRef(storage,p.path));
-  remove(ref(db,"photos/"+p.id));
-}
-
-onValue(ref(db,"photos"),snap=>{
-  const val=snap.val()||{};
-  photos=Object.entries(val).map(([id,v])=>({id,...v}));
-  renderGallery();
-  if(player) render();
+document.getElementById("lightbox").addEventListener("touchstart", e => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+document.getElementById("lightbox").addEventListener("touchend", e => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) diff > 0 ? nextPhoto() : prevPhoto();
 });
 
-function renderGallery(){
-  const g=document.getElementById("gallery");
-  g.innerHTML="";
-  photos.forEach((p,i)=>{
-    const d=document.createElement("div");
-    d.innerHTML=`<img src="${p.url}" onclick="open(${i})">`;
-    g.appendChild(d);
+document.getElementById("nameInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") join();
+});
+
+if (player) {
+  enterApp();
+}
+
+onValue(ref(db, "photos"), snap => {
+  const val = snap.val() || {};
+  photos = Object.entries(val)
+    .map(([id, v]) => ({ id, ...v }))
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  renderGallery();
+  renderHunt();
+});
+
+async function join() {
+  const name = document.getElementById("nameInput").value.trim();
+  if (!name) {
+    alert("Enter name");
+    return;
+  }
+
+  try {
+    const id = Date.now().toString();
+    player = {
+      id,
+      name,
+      completed: []
+    };
+
+    await set(ref(db, "players/" + id), player);
+    localStorage.setItem("gradPlayer", JSON.stringify(player));
+    enterApp();
+  } catch (err) {
+    console.error(err);
+    alert("Start failed. Check Firebase rules/config.");
+  }
+}
+
+function enterApp() {
+  homePage.classList.add("hidden");
+  bottomNav.classList.remove("hidden");
+  document.getElementById("welcome").innerText = "Welcome, " + player.name;
+  showHunt();
+  renderHunt();
+  renderGallery();
+}
+
+function renderHunt() {
+  if (!player) return;
+
+  huntList.innerHTML = "";
+
+  challenges.forEach((challenge, index) => {
+    const myPhotos = photos.filter(p => p.playerId === player.id && Number(p.challenge) === index);
+    const done = myPhotos.length > 0;
+
+    if (done && !player.completed.includes(index)) {
+      player.completed.push(index);
+      localStorage.setItem("gradPlayer", JSON.stringify(player));
+      update(ref(db, "players/" + player.id), { completed: player.completed });
+    }
+
+    if (!done && player.completed.includes(index)) {
+      player.completed = player.completed.filter(i => i !== index);
+      localStorage.setItem("gradPlayer", JSON.stringify(player));
+      update(ref(db, "players/" + player.id), { completed: player.completed });
+    }
+
+    const item = document.createElement("div");
+    item.className = "hunt-item " + (done ? "done" : "");
+    item.addEventListener("click", () => openPhotoChoice(index));
+
+    const deleteButtons = myPhotos.length
+      ? `<div class="delete-wrap">
+          ${myPhotos.map((p, n) => `
+            <button class="danger" data-photo-id="${p.id}">
+              Delete ${myPhotos.length > 1 ? "Photo " + (n + 1) : "Photo"}
+            </button>
+          `).join("")}
+        </div>`
+      : "";
+
+    item.innerHTML = `
+      <div class="check">${done ? "✓" : ""}</div>
+      <div>
+        <div class="hunt-title">${escapeHtml(challenge)}</div>
+        <div class="hunt-sub">${done ? myPhotos.length + " uploaded — tap to add another" : "Tap to add photo"}</div>
+      </div>
+      <div class="camera">📷</div>
+      ${deleteButtons}
+    `;
+
+    item.querySelectorAll("button[data-photo-id]").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        deletePhoto(btn.dataset.photoId);
+      });
+    });
+
+    huntList.appendChild(item);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const complete = player.completed.length;
+  const total = challenges.length;
+  document.getElementById("progressText").innerText = complete + "/" + total;
+  document.getElementById("progressBar").style.width = ((complete / total) * 100) + "%";
+}
+
+function openPhotoChoice(index) {
+  currentChallenge = index;
+  document.getElementById("modalTitle").innerText = challenges[index];
+  photoModal.classList.remove("hidden");
+}
+
+function closeModal() {
+  photoModal.classList.add("hidden");
+}
+
+async function uploadPhoto(file) {
+  if (!file || currentChallenge === null || !player) return;
+
+  try {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = "photos/" + player.id + "/" + Date.now() + "-" + safeName;
+    const imgRef = storageRef(storage, path);
+
+    await uploadBytes(imgRef, file);
+    const url = await getDownloadURL(imgRef);
+
+    const newPhoto = push(ref(db, "photos"));
+    await set(newPhoto, {
+      playerId: player.id,
+      playerName: player.name,
+      challenge: currentChallenge,
+      challengeText: challenges[currentChallenge],
+      url,
+      path,
+      createdAt: Date.now()
+    });
+
+    if (!player.completed.includes(currentChallenge)) {
+      player.completed.push(currentChallenge);
+      await update(ref(db, "players/" + player.id), { completed: player.completed });
+      localStorage.setItem("gradPlayer", JSON.stringify(player));
+    }
+
+    renderHunt();
+  } catch (err) {
+    console.error(err);
+    alert("Upload failed. Check Firebase Storage rules.");
+  }
+}
+
+async function deletePhoto(photoId) {
+  const p = photos.find(photo => photo.id === photoId);
+  if (!p) return alert("Photo not found.");
+  if (!player || p.playerId !== player.id) return alert("You can only delete your own photos.");
+  if (!confirm("Delete this photo?")) return;
+
+  try {
+    try {
+      await deleteObject(storageRef(storage, p.path));
+    } catch (e) {
+      console.warn("Storage delete warning:", e);
+    }
+
+    await remove(ref(db, "photos/" + p.id));
+    await recalculateProgress();
+  } catch (err) {
+    console.error(err);
+    alert("Delete failed.");
+  }
+}
+
+async function recalculateProgress() {
+  const snap = await get(ref(db, "photos"));
+  const val = snap.val() || {};
+  const remaining = Object.values(val)
+    .filter(p => p.playerId === player.id)
+    .map(p => Number(p.challenge));
+
+  player.completed = [...new Set(remaining)];
+  await update(ref(db, "players/" + player.id), { completed: player.completed });
+  localStorage.setItem("gradPlayer", JSON.stringify(player));
+  renderHunt();
+}
+
+function renderGallery() {
+  gallery.innerHTML = "";
+
+  if (!photos.length) {
+    gallery.innerHTML = `<div class="empty">No photos yet.</div>`;
+    return;
+  }
+
+  photos.forEach((p, index) => {
+    const div = document.createElement("div");
+    div.className = "photo-card";
+    div.innerHTML = `
+      <img src="${escapeHtml(p.url)}" alt="Photo">
+      <div class="photo-meta">
+        <strong>${escapeHtml(p.playerName || "Guest")}</strong><br>
+        ${escapeHtml(p.challengeText || "Photo")}
+      </div>
+    `;
+    div.querySelector("img").addEventListener("click", () => openLightbox(index));
+    gallery.appendChild(div);
   });
 }
 
-function showHunt(){
-  document.getElementById("photos").classList.add("hidden");
-  document.getElementById("hunt").classList.remove("hidden");
+function showHunt() {
+  photosPage.classList.add("hidden");
+  huntPage.classList.remove("hidden");
+  document.getElementById("huntNav").classList.remove("secondary");
+  document.getElementById("photosNav").classList.add("secondary");
 }
 
-function showPhotos(){
-  document.getElementById("hunt").classList.add("hidden");
-  document.getElementById("photos").classList.remove("hidden");
+function showPhotos() {
+  huntPage.classList.add("hidden");
+  photosPage.classList.remove("hidden");
+  document.getElementById("photosNav").classList.remove("secondary");
+  document.getElementById("huntNav").classList.add("secondary");
 }
 
-window.open=function(i){
-  index=i;
+function openLightbox(index) {
+  currentPhotoIndex = index;
+  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
   document.getElementById("lightbox").classList.remove("hidden");
-  document.getElementById("lightImg").src=photos[index].url;
 }
 
-window.next=function(){
-  index=(index+1)%photos.length;
-  document.getElementById("lightImg").src=photos[index].url;
-}
-
-window.prev=function(){
-  index=(index-1+photos.length)%photos.length;
-  document.getElementById("lightImg").src=photos[index].url;
-}
-
-document.getElementById("lightbox").onclick=()=>{
+function closeLightbox() {
   document.getElementById("lightbox").classList.add("hidden");
-};
+}
 
+function nextPhoto() {
+  if (!photos.length) return;
+  currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
+}
+
+function prevPhoto() {
+  if (!photos.length) return;
+  currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+  document.getElementById("lightboxImg").src = photos[currentPhotoIndex].url;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 </script>
 
 </body>
