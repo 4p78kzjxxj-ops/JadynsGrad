@@ -1,903 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jadyn Graduation Photo Scavenger Hunt</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Graduation Scavenger Hunt</title>
 
-  <style>
-    :root {
-      --blue: #3d8fc5;
-      --dark-blue: #123d5c;
-      --gold: #d6a84f;
-      --bg: #f5f8fb;
-      --text: #16202a;
-      --muted: #6b7280;
-      --card: #ffffff;
-      --green: #1f9d55;
-      --red: #c0392b;
-    }
+<style>
+body { font-family: Arial; margin:0; padding:0; background:#f5f8fb; }
+main { max-width:600px; margin:auto; padding:20px; }
+.card { background:#fff; padding:20px; border-radius:16px; margin-bottom:15px; }
+button { width:100%; padding:14px; margin-top:10px; border:none; border-radius:10px; background:#3d8fc5; color:#fff; font-weight:bold; }
+button.danger { background:#e74c3c; }
+.hidden { display:none; }
+.hunt-item { padding:12px; border:1px solid #ddd; border-radius:10px; margin-bottom:8px; cursor:pointer; }
+.hunt-item.done { background:#eafaf1; }
+.small { font-size:12px; color:#666; }
+img { width:100%; border-radius:10px; }
+</style>
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #eaf5ff 0%, var(--bg) 45%, #ffffff 100%);
-      color: var(--text);
-    }
-
-    header {
-      padding: 22px 18px 12px;
-      text-align: center;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border: 1px solid rgba(18, 61, 92, 0.2);
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--dark-blue);
-      background: rgba(255,255,255,.7);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h1 {
-      margin: 4px 0 4px;
-      font-size: clamp(32px, 8vw, 48px);
-      line-height: 1;
-      color: var(--dark-blue);
-    }
-
-    h1 span {
-      color: var(--blue);
-      font-style: italic;
-      font-weight: 800;
-    }
-
-    h2 { margin-top: 0; }
-
-    .subtitle {
-      margin: 8px auto 0;
-      color: var(--muted);
-      max-width: 360px;
-      font-size: 15px;
-    }
-
-    main {
-      width: min(100%, 560px);
-      margin: 0 auto;
-      padding: 12px 16px 88px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: 0 12px 35px rgba(18, 61, 92, 0.12);
-      border: 1px solid rgba(18, 61, 92, 0.08);
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 14px 15px;
-      font-size: 18px;
-      border: 1px solid #d5dce5;
-      border-radius: 14px;
-      outline: none;
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(61, 143, 197, .14);
-    }
-
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 16px;
-      padding: 15px 18px;
-      font-size: 18px;
-      font-weight: 800;
-      background: var(--blue);
-      color: #fff;
-      cursor: pointer;
-      text-align: center;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-
-    button:disabled {
-      opacity: .65;
-      cursor: not-allowed;
-    }
-
-    button:active { transform: scale(.99); }
-
-    button.secondary {
-      background: #eef5fb;
-      color: var(--dark-blue);
-      border: 1px solid rgba(18, 61, 92, .1);
-    }
-
-    button.danger {
-      background: #fff0f0;
-      color: var(--red);
-      border: 1px solid #ffd0d0;
-    }
-
-    button.small-btn {
-      padding: 9px 10px;
-      border-radius: 12px;
-      font-size: 13px;
-    }
-
-    .hidden { display: none !important; }
-
-    .tabs {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255,.96);
-      border-top: 1px solid #dbe4ed;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      z-index: 100;
-    }
-
-    .tabs button {
-      padding: 11px 8px;
-      border-radius: 14px;
-      font-size: 13px;
-      background: #eef5fb;
-      color: var(--dark-blue);
-    }
-
-    .tabs button.active {
-      background: var(--blue);
-      color: white;
-    }
-
-    .progress-wrap {
-      background: #d9e8f3;
-      border-radius: 999px;
-      height: 12px;
-      overflow: hidden;
-      margin: 12px 0 6px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--green);
-      transition: width .2s ease;
-    }
-
-    .hunt-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .hunt-item {
-      display: grid;
-      grid-template-columns: 30px 1fr 34px;
-      align-items: center;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 16px;
-      background: #fff;
-      border: 1px solid #e3e9f0;
-      cursor: pointer;
-    }
-
-    .hunt-item.done {
-      background: #effaf3;
-      border-color: #b7e2c3;
-    }
-
-    .check {
-      width: 24px;
-      height: 24px;
-      border: 2px solid #8a98a8;
-      border-radius: 6px;
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 900;
-    }
-
-    .hunt-item.done .check {
-      background: var(--green);
-      border-color: var(--green);
-    }
-
-    .camera-icon { font-size: 22px; }
-
-    .small {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .notice {
-      padding: 12px;
-      background: #fff8e7;
-      border: 1px solid #f0d48b;
-      color: #5f4100;
-      border-radius: 14px;
-      font-size: 14px;
-      margin-bottom: 14px;
-    }
-
-    .error-box {
-      padding: 12px;
-      background: #fff0f0;
-      border: 1px solid #ffd0d0;
-      color: #8a1f11;
-      border-radius: 14px;
-      font-size: 14px;
-      margin-bottom: 14px;
-      display: none;
-    }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .photo-card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #e3e9f0;
-      box-shadow: 0 6px 16px rgba(18, 61, 92, .08);
-    }
-
-    .photo-card img {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      display: block;
-      background: #eef5fb;
-    }
-
-    .photo-meta {
-      padding: 8px;
-      font-size: 12px;
-    }
-
-    .photo-actions {
-      padding: 0 8px 8px;
-    }
-
-    .leader-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      padding: 13px 0;
-      border-bottom: 1px solid #edf1f5;
-    }
-
-    .leader-row:last-child { border-bottom: 0; }
-
-    .pill {
-      padding: 5px 9px;
-      border-radius: 999px;
-      background: #eef5fb;
-      color: var(--dark-blue);
-      font-weight: 800;
-      font-size: 13px;
-    }
-
-    .button-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .loading {
-      opacity: .65;
-      pointer-events: none;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .42);
-      display: grid;
-      place-items: end center;
-      padding: 16px;
-      z-index: 999;
-    }
-
-    .modal {
-      width: min(100%, 520px);
-      background: white;
-      border-radius: 24px;
-      padding: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    }
-
-    .modal h3 {
-      margin: 0 0 6px;
-    }
-
-    .modal-buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 14px;
-    }
-  </style>
 </head>
 <body>
-  <header>
-    <div class="badge">Class of 2026</div>
-    <h1>Graduation <span>Scavenger Hunt</span></h1>
-    <p class="subtitle">Take pictures, check off the list, and help build a shared photo album for Jadyn.</p>
-  </header>
 
-  <main>
-    <div id="errorBox" class="error-box"></div>
+<main>
 
-    <section id="homePage" class="card">
-      <h2>Play now!</h2>
-      <p class="small">Enter your name to join the hunt.</p>
+<div id="homePage" class="card">
+<h2>Play Now!</h2>
+<input id="name" placeholder="Enter name" />
+<button onclick="join()">Start Playing</button>
+</div>
 
-      <label for="participantName">Participant name</label>
-      <input id="participantName" type="text" placeholder="Example: Uncle Mike" autocomplete="name" />
-      <br><br>
+<div id="huntPage" class="hidden">
+<div class="card">
+<strong id="welcome"></strong>
+<div id="progress"></div>
+</div>
 
-      <button id="startButton">Start Playing</button>
-    </section>
+<div id="huntList"></div>
 
-    <section id="huntPage" class="hidden">
-      <div class="card">
-        <strong id="welcomeName">Welcome!</strong>
-        <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="progressText" class="small">0/0 complete</div>
+<button onclick="showGallery()">View Photos</button>
+</div>
 
-        <div class="button-row">
-          <button id="viewPhotosButton" class="secondary">View Photos</button>
-          <button id="resetButton" class="danger">Reset Me</button>
-        </div>
-      </div>
+<div id="galleryPage" class="hidden">
+<h2>Photos</h2>
+<div id="gallery"></div>
+<button onclick="showHunt()">Back</button>
+</div>
 
-      <div class="notice">
-        Tap a challenge, then choose whether to take a new photo or upload one from your camera roll.
-      </div>
+</main>
 
-      <div id="huntList" class="hunt-list"></div>
-    </section>
+<input id="cameraInput" type="file" accept="image/*" capture="environment" class="hidden"/>
+<input id="uploadInput" type="file" accept="image/*" class="hidden"/>
 
-    <section id="galleryPage" class="hidden">
-      <div class="card">
-        <h2>Shared Photos</h2>
-        <p class="small">Photos uploaded by everyone playing. You can delete your own uploads.</p>
-      </div>
-      <div id="galleryGrid" class="gallery-grid"></div>
-    </section>
+<script type="module">
 
-    <section id="leaderboardPage" class="hidden">
-      <div class="card">
-        <h2>Who’s Playing?</h2>
-        <p class="small">See everyone’s progress.</p>
-        <div id="leaderboard"></div>
-      </div>
-    </section>
-  </main>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
-  <nav id="tabs" class="tabs hidden">
-    <button id="tabHunt" class="active">Hunt</button>
-    <button id="tabGallery">Photos</button>
-    <button id="tabLeaderboard">Players</button>
-  </nav>
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "YOUR_DB_URL",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
 
-  <div id="photoChoiceModal" class="modal-backdrop hidden">
-    <div class="modal">
-      <h3 id="modalChallengeTitle">Choose photo</h3>
-      <p class="small">Take a new picture or upload one from your camera roll.</p>
-      <div class="modal-buttons">
-        <button id="takePhotoButton">Take Photo</button>
-        <button id="cameraRollButton" class="secondary">Upload From Camera Roll</button>
-        <button id="cancelPhotoButton" class="danger">Cancel</button>
-      </div>
-    </div>
-  </div>
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
-  <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
-  <input id="cameraRollInput" class="hidden" type="file" accept="image/*" />
+const challenges = ["Jadyn smiling","Selfie","Food table","Group photo"];
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import {
-      getDatabase,
-      ref as dbRef,
-      set,
-      update,
-      push,
-      onValue,
-      get,
-      remove,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
-    import {
-      getStorage,
-      ref as storageRef,
-      uploadBytes,
-      getDownloadURL,
-      deleteObject
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+let player = null;
+let photos = [];
 
-    /**************************************************************
-     * FIREBASE SETUP
-     *
-     * This version uses:
-     * - Firebase Realtime Database
-     * - Firebase Storage
-     *
-     * Replace apiKey, messagingSenderId, and appId with the values from:
-     * Firebase Console → Project Settings → General → Your Apps → Web App
-     **************************************************************/
+function join(){
+  const name = document.getElementById("name").value;
+  if(!name) return alert("Enter name");
 
-    const firebaseConfig = {
-      apiKey: "PASTE_YOUR_API_KEY_HERE",
-      authDomain: "jadyngrad-975d6.firebaseapp.com",
-      databaseURL: "https://jadyngrad-975d6-default-rtdb.firebaseio.com",
-      projectId: "jadyngrad-975d6",
-      storageBucket: "jadyngrad-975d6.firebasestorage.app",
-      messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
-      appId: "PASTE_YOUR_APP_ID_HERE"
-    };
+  const id = Date.now().toString();
+  player = { id, name, completed:[] };
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const storage = getStorage(app);
+  set(ref(db,"players/"+id), player);
 
-    const challenges = [
-      "Jadyn smiling",
-      "Jadyn and his dad",
-      "Jadyn and his mom",
-      "Jadyn and Jenny",
-      "Jadyn and Brian",
-      "Jadyn with sibling(s)",
-      "Jadyn looking surprised",
-      "Jadyn dancing",
-      "Jadyn pointing at something",
-      "The food table",
-      "The dessert",
-      "A selfie",
-      "A selfie with you and Jadyn",
-      "People gathering",
-      "Your favorite decoration/prop"
-    ];
+  document.getElementById("homePage").classList.add("hidden");
+  document.getElementById("huntPage").classList.remove("hidden");
+  document.getElementById("welcome").innerText = "Welcome "+name;
 
-    let participant = JSON.parse(localStorage.getItem("gradParticipant") || "null");
-    let players = [];
-    let photos = [];
-    let selectedChallengeIndex = null;
-    let isUploading = false;
+  render();
+}
 
-    const errorBox = document.getElementById("errorBox");
-    const homePage = document.getElementById("homePage");
-    const huntPage = document.getElementById("huntPage");
-    const galleryPage = document.getElementById("galleryPage");
-    const leaderboardPage = document.getElementById("leaderboardPage");
-    const tabs = document.getElementById("tabs");
-    const cameraInput = document.getElementById("cameraInput");
-    const cameraRollInput = document.getElementById("cameraRollInput");
-    const startButton = document.getElementById("startButton");
-    const viewPhotosButton = document.getElementById("viewPhotosButton");
-    const resetButton = document.getElementById("resetButton");
-    const tabHunt = document.getElementById("tabHunt");
-    const tabGallery = document.getElementById("tabGallery");
-    const tabLeaderboard = document.getElementById("tabLeaderboard");
-    const photoChoiceModal = document.getElementById("photoChoiceModal");
-    const modalChallengeTitle = document.getElementById("modalChallengeTitle");
-    const takePhotoButton = document.getElementById("takePhotoButton");
-    const cameraRollButton = document.getElementById("cameraRollButton");
-    const cancelPhotoButton = document.getElementById("cancelPhotoButton");
+function render(){
+  const list = document.getElementById("huntList");
+  list.innerHTML="";
 
-    startButton.addEventListener("click", joinGame);
-    viewPhotosButton.addEventListener("click", () => showPage("gallery"));
-    resetButton.addEventListener("click", resetMyGame);
-    tabHunt.addEventListener("click", () => showPage("hunt"));
-    tabGallery.addEventListener("click", () => showPage("gallery"));
-    tabLeaderboard.addEventListener("click", () => showPage("leaderboard"));
+  challenges.forEach((c,i)=>{
+    const done = player.completed.includes(i);
 
-    takePhotoButton.addEventListener("click", () => {
-      closePhotoChoice();
-      cameraInput.value = "";
-      cameraInput.click();
+    const div = document.createElement("div");
+    div.className = "hunt-item "+(done?"done":"");
+    div.innerHTML = `<b>${c}</b><div class="small">${done?"Done":"Tap to upload"}</div>`;
+
+    div.onclick = ()=>selectPhoto(i);
+
+    const myPhotos = photos.filter(p=>p.playerId===player.id && p.challenge===i);
+
+    myPhotos.forEach(p=>{
+      const btn = document.createElement("button");
+      btn.className="danger";
+      btn.innerText="Delete Photo";
+      btn.onclick = (e)=>{
+        e.stopPropagation();
+        deletePhoto(p);
+      };
+      div.appendChild(btn);
     });
 
-    cameraRollButton.addEventListener("click", () => {
-      closePhotoChoice();
-      cameraRollInput.value = "";
-      cameraRollInput.click();
-    });
-
-    cancelPhotoButton.addEventListener("click", closePhotoChoice);
-
-    photoChoiceModal.addEventListener("click", (event) => {
-      if (event.target === photoChoiceModal) closePhotoChoice();
-    });
-
-    document.getElementById("participantName").addEventListener("keydown", (event) => {
-      if (event.key === "Enter") joinGame();
-    });
-
-    cameraInput.addEventListener("change", async (event) => {
-      const file = event.target.files[0];
-      if (!file || selectedChallengeIndex === null || isUploading) return;
-      await uploadPhoto(file, selectedChallengeIndex);
-    });
-
-    cameraRollInput.addEventListener("change", async (event) => {
-      const file = event.target.files[0];
-      if (!file || selectedChallengeIndex === null || isUploading) return;
-      await uploadPhoto(file, selectedChallengeIndex);
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-      startLiveListeners();
-
-      if (participant) {
-        enterGame();
-      }
-    });
-
-    window.deletePhoto = deletePhoto;
-
-    function showError(message) {
-      errorBox.textContent = message;
-      errorBox.style.display = "block";
-      console.error(message);
-    }
-
-    function clearError() {
-      errorBox.textContent = "";
-      errorBox.style.display = "none";
-    }
-
-    function startLiveListeners() {
-      onValue(dbRef(database, "participants"), (snapshot) => {
-        const value = snapshot.val() || {};
-        players = Object.entries(value).map(([id, data]) => ({
-          id,
-          ...data,
-          completed: Array.isArray(data.completed) ? data.completed : []
-        }));
-        renderLeaderboard();
-      }, (error) => {
-        showError("Realtime Database players read failed. Check your Realtime Database rules.");
-        console.error(error);
-      });
-
-      onValue(dbRef(database, "photos"), (snapshot) => {
-        const value = snapshot.val() || {};
-        photos = Object.entries(value).map(([id, data]) => ({
-          id,
-          ...data
-        })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        renderGallery();
-      }, (error) => {
-        showError("Realtime Database photos read failed. Check your Realtime Database rules.");
-        console.error(error);
-      });
-    }
-
-    async function joinGame() {
-      clearError();
-
-      const nameInput = document.getElementById("participantName");
-      const name = nameInput.value.trim();
-
-      if (!name) {
-        alert("Please enter your name first.");
-        nameInput.focus();
-        return;
-      }
-
-      startButton.textContent = "Joining...";
-      startButton.disabled = true;
-
-      try {
-        const participantId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
-
-        participant = {
-          id: participantId,
-          name: name,
-          completed: [],
-          joinedAt: Date.now()
-        };
-
-        await set(dbRef(database, `participants/${participantId}`), {
-          name: participant.name,
-          completed: participant.completed,
-          joinedAt: serverTimestamp()
-        });
-
-        localStorage.setItem("gradParticipant", JSON.stringify(participant));
-        enterGame();
-      } catch (error) {
-        console.error(error);
-        showError("Could not join. Check your Firebase config and Realtime Database rules.");
-        alert("Could not join. Check Firebase Realtime Database rules and config.");
-      } finally {
-        startButton.textContent = "Start Playing";
-        startButton.disabled = false;
-      }
-    }
-
-    function enterGame() {
-      homePage.classList.add("hidden");
-      tabs.classList.remove("hidden");
-      document.getElementById("welcomeName").textContent = `Welcome, ${participant.name}!`;
-      renderHuntList();
-      updateProgress();
-      renderGallery();
-      renderLeaderboard();
-      showPage("hunt");
-    }
-
-    function renderHuntList() {
-      const list = document.getElementById("huntList");
-      list.innerHTML = "";
-
-      challenges.forEach((text, index) => {
-        const done = participant && participant.completed && participant.completed.includes(index);
-        const item = document.createElement("div");
-        item.className = `hunt-item ${done ? "done" : ""}`;
-        item.addEventListener("click", () => openPhotoChoice(index));
-
-        item.innerHTML = `
-          <div class="check">${done ? "✓" : ""}</div>
-          <div>
-            <strong>${escapeHtml(text)}</strong>
-            <div class="small">${done ? "Completed — tap to add another" : "Tap to add photo"}</div>
-          </div>
-          <div class="camera-icon">📷</div>
-        `;
-
-        list.appendChild(item);
-      });
-    }
-
-    function openPhotoChoice(index) {
-      if (!participant) return;
-      selectedChallengeIndex = index;
-      modalChallengeTitle.textContent = challenges[index];
-      photoChoiceModal.classList.remove("hidden");
-    }
-
-    function closePhotoChoice() {
-      photoChoiceModal.classList.add("hidden");
-    }
-
-    async function uploadPhoto(file, challengeIndex) {
-      if (!participant) return;
-      clearError();
-
-      const challengeText = challenges[challengeIndex];
-      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const filePath = `graduation-hunt/${participant.id}/${Date.now()}-${challengeIndex}-${safeFileName}`;
-      const imageStorageRef = storageRef(storage, filePath);
-
-      isUploading = true;
-      document.body.classList.add("loading");
-
-      try {
-        await uploadBytes(imageStorageRef, file);
-        const imageUrl = await getDownloadURL(imageStorageRef);
-
-        const newPhotoRef = push(dbRef(database, "photos"));
-        await set(newPhotoRef, {
-          participantId: participant.id,
-          participantName: participant.name,
-          challengeIndex: challengeIndex,
-          challengeText: challengeText,
-          imageUrl: imageUrl,
-          storagePath: filePath,
-          createdAt: serverTimestamp()
-        });
-
-        if (!participant.completed.includes(challengeIndex)) {
-          participant.completed.push(challengeIndex);
-        }
-
-        await update(dbRef(database, `participants/${participant.id}`), {
-          completed: participant.completed
-        });
-
-        localStorage.setItem("gradParticipant", JSON.stringify(participant));
-
-        renderHuntList();
-        updateProgress();
-        alert("Photo uploaded!");
-      } catch (error) {
-        console.error(error);
-        showError("Upload failed. Check Firebase Storage rules, Realtime Database rules, and your Firebase config.");
-        alert("Upload failed. Check Firebase Storage rules and Realtime Database rules.");
-      } finally {
-        isUploading = false;
-        document.body.classList.remove("loading");
-      }
-    }
-
-    async function deletePhoto(photoId) {
-      clearError();
-
-      const photo = photos.find(item => item.id === photoId);
-      if (!photo) {
-        alert("Photo not found.");
-        return;
-      }
-
-      if (!participant || photo.participantId !== participant.id) {
-        alert("You can only delete photos uploaded from this device/player.");
-        return;
-      }
-
-      if (!confirm("Delete this photo?")) return;
-
-      document.body.classList.add("loading");
-
-      try {
-        if (photo.storagePath) {
-          await deleteObject(storageRef(storage, photo.storagePath));
-        }
-
-        await remove(dbRef(database, `photos/${photoId}`));
-
-        await recalculateParticipantProgress(photo.participantId);
-
-        alert("Photo deleted.");
-      } catch (error) {
-        console.error(error);
-        showError("Delete failed. Check Firebase Storage rules and Realtime Database rules.");
-        alert("Delete failed. Check Firebase rules.");
-      } finally {
-        document.body.classList.remove("loading");
-      }
-    }
-
-    async function recalculateParticipantProgress(participantId) {
-      const snapshot = await get(dbRef(database, "photos"));
-      const value = snapshot.val() || {};
-
-      const remainingChallengeIndexes = Object.values(value)
-        .filter(photo => photo.participantId === participantId)
-        .map(photo => photo.challengeIndex);
-
-      const uniqueCompleted = [...new Set(remainingChallengeIndexes)];
-
-      await update(dbRef(database, `participants/${participantId}`), {
-        completed: uniqueCompleted
-      });
-
-      if (participant && participant.id === participantId) {
-        participant.completed = uniqueCompleted;
-        localStorage.setItem("gradParticipant", JSON.stringify(participant));
-        renderHuntList();
-        updateProgress();
-      }
-    }
-
-    function updateProgress() {
-      const total = challenges.length;
-      const done = participant && participant.completed ? participant.completed.length : 0;
-      const percent = total ? Math.round((done / total) * 100) : 0;
-
-      document.getElementById("progressBar").style.width = `${percent}%`;
-      document.getElementById("progressText").textContent = `${done}/${total} complete`;
-    }
-
-    function renderGallery() {
-      const grid = document.getElementById("galleryGrid");
-      if (!grid) return;
-
-      if (!photos.length) {
-        grid.innerHTML = `<div class="card small">No photos yet.</div>`;
-        return;
-      }
-
-      grid.innerHTML = photos.map(photo => {
-        const canDelete = participant && photo.participantId === participant.id;
-        return `
-          <div class="photo-card">
-            <img src="${escapeHtml(photo.imageUrl || "")}" alt="${escapeHtml(photo.challengeText || "Photo")}">
-            <div class="photo-meta">
-              <strong>${escapeHtml(photo.challengeText || "Photo")}</strong><br>
-              <span class="small">by ${escapeHtml(photo.participantName || "Guest")}</span>
-            </div>
-            ${canDelete ? `
-              <div class="photo-actions">
-                <button class="danger small-btn" onclick="deletePhoto('${escapeHtml(photo.id)}')">Delete Photo</button>
-              </div>
-            ` : ""}
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderLeaderboard() {
-      const board = document.getElementById("leaderboard");
-      if (!board) return;
-
-      if (!players.length) {
-        board.innerHTML = `<div class="small">No one has joined yet.</div>`;
-        return;
-      }
-
-      const sortedPlayers = [...players].sort((a, b) => {
-        const aCount = Array.isArray(a.completed) ? a.completed.length : 0;
-        const bCount = Array.isArray(b.completed) ? b.completed.length : 0;
-        return bCount - aCount;
-      });
-
-      board.innerHTML = sortedPlayers.map(player => {
-        const completedCount = Array.isArray(player.completed) ? player.completed.length : 0;
-        return `
-          <div class="leader-row">
-            <strong>${escapeHtml(player.name || "Guest")}</strong>
-            <span class="pill">${completedCount}/${challenges.length}</span>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function showPage(page) {
-      huntPage.classList.toggle("hidden", page !== "hunt");
-      galleryPage.classList.toggle("hidden", page !== "gallery");
-      leaderboardPage.classList.toggle("hidden", page !== "leaderboard");
-
-      tabHunt.classList.toggle("active", page === "hunt");
-      tabGallery.classList.toggle("active", page === "gallery");
-      tabLeaderboard.classList.toggle("active", page === "leaderboard");
-
-      renderGallery();
-      renderLeaderboard();
-    }
-
-    function resetMyGame() {
-      if (!confirm("Reset this device and go back to the start screen? This will not delete photos already uploaded.")) return;
-
-      participant = null;
-      localStorage.removeItem("gradParticipant");
-
-      tabs.classList.add("hidden");
-      huntPage.classList.add("hidden");
-      galleryPage.classList.add("hidden");
-      leaderboardPage.classList.add("hidden");
-      homePage.classList.remove("hidden");
-      document.getElementById("participantName").value = "";
-      updateProgress();
-      renderGallery();
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-  </script>
+    list.appendChild(div);
+  });
+
+  document.getElementById("progress").innerText =
+    player.completed.length + "/" + challenges.length;
+}
+
+function selectPhoto(i){
+  currentChallenge=i;
+
+  if(confirm("Take photo? OK = camera, Cancel = upload")){
+    document.getElementById("cameraInput").click();
+  } else {
+    document.getElementById("uploadInput").click();
+  }
+}
+
+let currentChallenge=null;
+
+document.getElementById("cameraInput").onchange = e=>upload(e.target.files[0]);
+document.getElementById("uploadInput").onchange = e=>upload(e.target.files[0]);
+
+async function upload(file){
+  const path = "photos/"+Date.now()+file.name;
+  const refStorage = sRef(storage,path);
+
+  await uploadBytes(refStorage,file);
+  const url = await getDownloadURL(refStorage);
+
+  const newRef = push(ref(db,"photos"));
+  await set(newRef,{
+    playerId:player.id,
+    playerName:player.name,
+    challenge:currentChallenge,
+    url,
+    path
+  });
+
+  if(!player.completed.includes(currentChallenge)){
+    player.completed.push(currentChallenge);
+    update(ref(db,"players/"+player.id),{completed:player.completed});
+  }
+}
+
+function deletePhoto(p){
+  deleteObject(sRef(storage,p.path));
+  remove(ref(db,"photos/"+p.id));
+}
+
+onValue(ref(db,"photos"),snap=>{
+  const val = snap.val()||{};
+  photos = Object.entries(val).map(([id,v])=>({id,...v}));
+  renderGallery();
+  if(player) render();
+});
+
+function renderGallery(){
+  const g = document.getElementById("gallery");
+  g.innerHTML="";
+  photos.forEach(p=>{
+    const div=document.createElement("div");
+    div.innerHTML=`<img src="${p.url}"><div>${p.playerName}</div>`;
+    g.appendChild(div);
+  });
+}
+
+function showGallery(){
+  document.getElementById("huntPage").classList.add("hidden");
+  document.getElementById("galleryPage").classList.remove("hidden");
+}
+
+function showHunt(){
+  document.getElementById("galleryPage").classList.add("hidden");
+  document.getElementById("huntPage").classList.remove("hidden");
+}
+
+</script>
+
 </body>
 </html>
