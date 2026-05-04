@@ -17,63 +17,21 @@
  --danger:#ef4444;
  --success:#22c55e;
 }
-
 *{box-sizing:border-box}
-
 body{
  margin:0;
  font-family:Arial, sans-serif;
  background:linear-gradient(180deg,#ffffff,#f4f7ff);
  color:var(--text);
 }
-
-main{
- max-width:620px;
- margin:auto;
- padding:18px 16px 90px;
-}
-
-.logo{
- text-align:center;
- margin:8px 0 10px;
-}
-
-.logo img{
- width:125px;
- max-width:38vw;
-}
-
-.watermark{
- position:fixed;
- right:18px;
- bottom:82px;
- width:90px;
- opacity:.08;
- pointer-events:none;
-}
-
-.hero{
- text-align:center;
- margin-bottom:16px;
-}
-
-.hero h1{
- margin:8px 0 6px;
- color:var(--blue-dark);
- font-size:38px;
- line-height:1;
-}
-
-.hero h1 span{
- color:var(--blue);
-}
-
-.hero p{
- margin:0;
- color:var(--muted);
- font-size:14px;
-}
-
+main{max-width:620px;margin:auto;padding:18px 16px 90px;}
+.logo{text-align:center;margin:8px 0 10px;}
+.logo img{width:125px;max-width:38vw;}
+.watermark{position:fixed;right:18px;bottom:82px;width:90px;opacity:.08;pointer-events:none;}
+.hero{text-align:center;margin-bottom:16px;}
+.hero h1{margin:8px 0 6px;color:var(--blue-dark);font-size:38px;line-height:1;}
+.hero h1 span{color:var(--blue);}
+.hero p{margin:0;color:var(--muted);font-size:14px;}
 .card{
  background:var(--card);
  border:2px solid var(--blue);
@@ -82,7 +40,6 @@ main{
  margin-bottom:16px;
  box-shadow:0 12px 28px rgba(10,44,255,.12);
 }
-
 input{
  width:100%;
  padding:15px;
@@ -91,7 +48,6 @@ input{
  font-size:17px;
  margin-top:10px;
 }
-
 button{
  width:100%;
  padding:14px;
@@ -104,19 +60,9 @@ button{
  font-size:16px;
  cursor:pointer;
 }
-
-button.secondary{
- background:#eef2ff;
- color:var(--blue-dark);
-}
-
-button.danger{
- background:#fee2e2;
- color:#b91c1c;
-}
-
+button.secondary{background:#eef2ff;color:var(--blue-dark);}
+button.danger{background:#fee2e2;color:#b91c1c;}
 .hidden{display:none!important}
-
 .notice{
  background:#fff7bf;
  border:1px solid var(--gold);
@@ -126,46 +72,12 @@ button.danger{
  margin-bottom:14px;
  font-size:14px;
 }
-
-.progress-row{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:12px;
-}
-
-#welcome{
- font-size:20px;
- color:var(--blue-dark);
- font-weight:bold;
-}
-
-#progressText{
- background:#fff3a3;
- border-radius:999px;
- padding:7px 11px;
- font-weight:bold;
-}
-
-.progress-track{
- height:12px;
- background:#e5eaff;
- border-radius:999px;
- overflow:hidden;
- margin-top:12px;
-}
-
-#progressBar{
- height:100%;
- width:0%;
- background:linear-gradient(90deg,var(--gold),var(--success));
-}
-
-.hunt-list{
- display:grid;
- gap:12px;
-}
-
+.progress-row{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+#welcome{font-size:20px;color:var(--blue-dark);font-weight:bold;}
+#progressText{background:#fff3a3;border-radius:999px;padding:7px 11px;font-weight:bold;}
+.progress-track{height:12px;background:#e5eaff;border-radius:999px;overflow:hidden;margin-top:12px;}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--success));}
+.hunt-list{display:grid;gap:12px;}
 .hunt-item{
  display:grid;
  grid-template-columns:32px 1fr 36px;
@@ -178,154 +90,72 @@ button.danger{
  box-shadow:0 8px 18px rgba(0,0,0,.05);
  cursor:pointer;
 }
-
-.hunt-item.done{
- background:#f0fff4;
- border-color:#86efac;
-}
-
+.hunt-item.done{background:#f0fff4;border-color:#86efac;}
 .check{
- width:30px;
- height:30px;
- border-radius:9px;
- border:2px solid #b7c3ff;
- display:grid;
- place-items:center;
- font-weight:bold;
+ width:30px;height:30px;border-radius:9px;border:2px solid #b7c3ff;
+ display:grid;place-items:center;font-weight:bold;
 }
-
-.hunt-item.done .check{
- background:var(--success);
- border-color:var(--success);
- color:white;
-}
-
-.hunt-title{
- font-weight:bold;
-}
-
-.hunt-sub{
- font-size:12px;
- color:var(--muted);
- margin-top:3px;
-}
-
-.camera{
- font-size:22px;
-}
-
-.delete-wrap{
- grid-column:2 / 4;
- display:grid;
- gap:8px;
-}
-
-.delete-wrap button{
- margin:0;
- padding:10px;
- font-size:13px;
-}
-
-#gallery{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:12px;
-}
-
+.hunt-item.done .check{background:var(--success);border-color:var(--success);color:white;}
+.hunt-title{font-weight:bold;}
+.hunt-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.camera{font-size:22px;}
+.delete-wrap{grid-column:2 / 4;display:grid;gap:8px;}
+.delete-wrap button{margin:0;padding:10px;font-size:13px;}
+#gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .photo-card{
- background:white;
- border-radius:18px;
- overflow:hidden;
- border:1px solid #dbe3ff;
+ background:white;border-radius:18px;overflow:hidden;border:1px solid #dbe3ff;
  box-shadow:0 8px 18px rgba(0,0,0,.06);
 }
-
-.photo-card img{
- width:100%;
- aspect-ratio:1/1;
- object-fit:cover;
- display:block;
-}
-
-.photo-meta{
- padding:9px;
- font-size:12px;
-}
-
+.photo-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;}
+.photo-meta{padding:9px;font-size:12px;}
 .bottom-nav{
- position:fixed;
- bottom:0;
- left:0;
- right:0;
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px;
- background:white;
- border-top:1px solid #dbe3ff;
- padding:10px 14px;
+ position:fixed;bottom:0;left:0;right:0;
+ display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+ background:white;border-top:1px solid #dbe3ff;padding:10px 14px;
 }
-
-.bottom-nav button{
- margin:0;
-}
-
+.bottom-nav button{margin:0;font-size:14px;padding:12px 8px;}
 .modal-backdrop{
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.55);
- display:grid;
- place-items:end center;
- padding:16px;
- z-index:1000;
+ position:fixed;inset:0;background:rgba(0,0,0,.55);
+ display:grid;place-items:end center;padding:16px;z-index:1000;
 }
-
-.modal{
- width:min(100%,520px);
- background:white;
- border-radius:24px;
- padding:18px;
-}
-
-.modal h3{
- margin:0 0 4px;
-}
-
+.modal{width:min(100%,520px);background:white;border-radius:24px;padding:18px;}
+.modal h3{margin:0 0 4px;}
 #lightbox{
- position:fixed;
- inset:0;
- background:rgba(0,0,0,.94);
- z-index:9999;
- display:flex;
- align-items:center;
- justify-content:center;
- gap:10px;
- padding:12px;
+ position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:9999;
+ display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;
 }
-
 #lightbox.hidden{display:none!important}
-
-#lightbox img{
- max-width:82vw;
- max-height:82vh;
- object-fit:contain;
- border-radius:12px;
-}
-
-#lightbox button{
- width:auto;
- background:transparent;
- font-size:42px;
- margin:0;
- padding:8px;
-}
-
+#lightbox img{max-width:82vw;max-height:82vh;object-fit:contain;border-radius:12px;}
+#lightbox button{width:auto;background:transparent;font-size:42px;margin:0;padding:8px;}
 .empty{
- grid-column:1 / -1;
- text-align:center;
- color:var(--muted);
- padding:28px;
+ grid-column:1 / -1;text-align:center;color:var(--muted);
+ padding:28px;background:white;border-radius:18px;
+}
+.leaderboard-list{display:grid;gap:12px;}
+.leader-row{
+ display:grid;
+ grid-template-columns:42px 1fr auto;
+ gap:12px;
+ align-items:center;
  background:white;
+ border:1px solid #dbe3ff;
  border-radius:18px;
+ padding:14px;
+ box-shadow:0 8px 18px rgba(0,0,0,.05);
+}
+.rank{
+ width:36px;height:36px;border-radius:999px;
+ display:grid;place-items:center;
+ background:#eef2ff;color:var(--blue-dark);font-weight:bold;
+}
+.leader-name{font-weight:bold;}
+.leader-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.leader-score{
+ font-weight:bold;
+ color:var(--blue-dark);
+ background:#fff3a3;
+ padding:7px 10px;
+ border-radius:999px;
 }
 </style>
 </head>
@@ -374,10 +204,21 @@ button.danger{
   <div class="card">
    <h2>Photos</h2>
    <p>Tap a photo to open it. Swipe left or right to browse.</p>
-   <p style="font-size:13px;color:var(--muted);margin-bottom:0;">To save a photo: tap it to open, then press and hold the image and choose “Save to Photos” or “Add to Photos.”</p>
+   <p style="font-size:13px;color:var(--muted);margin-bottom:0;">
+    To save a photo: tap it to open, then press and hold the image and choose “Save to Photos” or “Add to Photos.”
+   </p>
   </div>
 
   <div id="gallery"></div>
+ </section>
+
+ <section id="leaderboardPage" class="hidden">
+  <div class="card">
+   <h2>Leaderboard</h2>
+   <p>Live rankings based on completed photo challenges.</p>
+  </div>
+
+  <div id="leaderboardList" class="leaderboard-list"></div>
  </section>
 
 </main>
@@ -385,6 +226,7 @@ button.danger{
 <nav id="bottomNav" class="bottom-nav hidden">
  <button id="huntNav">Hunt</button>
  <button id="photosNav" class="secondary">Photos</button>
+ <button id="leaderboardNav" class="secondary">Leaderboard</button>
 </nav>
 
 <div id="photoModal" class="modal-backdrop hidden">
@@ -445,6 +287,7 @@ const challenges = [
 
 let player = JSON.parse(localStorage.getItem("gradPlayer") || "null");
 let photos = [];
+let players = [];
 let currentChallenge = null;
 let currentPhotoIndex = 0;
 let touchStartX = 0;
@@ -452,9 +295,11 @@ let touchStartX = 0;
 const homePage = document.getElementById("homePage");
 const huntPage = document.getElementById("huntPage");
 const photosPage = document.getElementById("photosPage");
+const leaderboardPage = document.getElementById("leaderboardPage");
 const bottomNav = document.getElementById("bottomNav");
 const huntList = document.getElementById("huntList");
 const gallery = document.getElementById("gallery");
+const leaderboardList = document.getElementById("leaderboardList");
 const photoModal = document.getElementById("photoModal");
 const cameraInput = document.getElementById("cameraInput");
 const rollInput = document.getElementById("rollInput");
@@ -462,6 +307,7 @@ const rollInput = document.getElementById("rollInput");
 document.getElementById("startBtn").addEventListener("click", join);
 document.getElementById("huntNav").addEventListener("click", showHunt);
 document.getElementById("photosNav").addEventListener("click", showPhotos);
+document.getElementById("leaderboardNav").addEventListener("click", showLeaderboard);
 
 document.getElementById("takePhotoBtn").addEventListener("click", () => {
  closeModal();
@@ -517,6 +363,13 @@ onValue(ref(db, "photos"), snap => {
 
  renderGallery();
  renderHunt();
+ renderLeaderboard();
+});
+
+onValue(ref(db, "players"), snap => {
+ const val = snap.val() || {};
+ players = Object.entries(val).map(([id, v]) => ({ id, ...v }));
+ renderLeaderboard();
 });
 
 async function join() {
@@ -552,6 +405,7 @@ function enterApp() {
  showHunt();
  renderHunt();
  renderGallery();
+ renderLeaderboard();
 }
 
 function renderHunt() {
@@ -659,6 +513,7 @@ async function uploadPhoto(file) {
   }
 
   renderHunt();
+  renderLeaderboard();
  } catch (err) {
   console.error(err);
   alert("Upload failed. Check Firebase Storage rules.");
@@ -700,6 +555,7 @@ async function recalculateProgress() {
  await update(ref(db, "players/" + player.id), { completed: player.completed });
  localStorage.setItem("gradPlayer", JSON.stringify(player));
  renderHunt();
+ renderLeaderboard();
 }
 
 function renderGallery() {
@@ -727,18 +583,101 @@ function renderGallery() {
  });
 }
 
+function renderLeaderboard() {
+ leaderboardList.innerHTML = "";
+
+ const scoreMap = {};
+
+ photos.forEach(p => {
+  if (!p.playerId) return;
+
+  if (!scoreMap[p.playerId]) {
+   scoreMap[p.playerId] = {
+    id: p.playerId,
+    name: p.playerName || "Guest",
+    completedSet: new Set(),
+    photoCount: 0
+   };
+  }
+
+  scoreMap[p.playerId].completedSet.add(Number(p.challenge));
+  scoreMap[p.playerId].photoCount++;
+ });
+
+ players.forEach(p => {
+  if (!scoreMap[p.id]) {
+   scoreMap[p.id] = {
+    id: p.id,
+    name: p.name || "Guest",
+    completedSet: new Set(Array.isArray(p.completed) ? p.completed.map(Number) : []),
+    photoCount: 0
+   };
+  }
+ });
+
+ const rankings = Object.values(scoreMap)
+  .map(p => ({
+   ...p,
+   completed: p.completedSet.size
+  }))
+  .sort((a, b) => {
+   if (b.completed !== a.completed) return b.completed - a.completed;
+   if (b.photoCount !== a.photoCount) return b.photoCount - a.photoCount;
+   return a.name.localeCompare(b.name);
+  });
+
+ if (!rankings.length) {
+  leaderboardList.innerHTML = `<div class="empty">No players yet.</div>`;
+  return;
+ }
+
+ rankings.forEach((p, index) => {
+  const row = document.createElement("div");
+  row.className = "leader-row";
+
+  row.innerHTML = `
+   <div class="rank">${index + 1}</div>
+   <div>
+    <div class="leader-name">${escapeHtml(p.name)}</div>
+    <div class="leader-sub">${p.photoCount} photo${p.photoCount === 1 ? "" : "s"} uploaded</div>
+   </div>
+   <div class="leader-score">${p.completed}/${challenges.length}</div>
+  `;
+
+  leaderboardList.appendChild(row);
+ });
+}
+
 function showHunt() {
  photosPage.classList.add("hidden");
+ leaderboardPage.classList.add("hidden");
  huntPage.classList.remove("hidden");
+
  document.getElementById("huntNav").classList.remove("secondary");
  document.getElementById("photosNav").classList.add("secondary");
+ document.getElementById("leaderboardNav").classList.add("secondary");
 }
 
 function showPhotos() {
  huntPage.classList.add("hidden");
+ leaderboardPage.classList.add("hidden");
  photosPage.classList.remove("hidden");
+
  document.getElementById("photosNav").classList.remove("secondary");
  document.getElementById("huntNav").classList.add("secondary");
+ document.getElementById("leaderboardNav").classList.add("secondary");
+}
+
+function showLeaderboard() {
+ huntPage.classList.add("hidden");
+ photosPage.classList.add("hidden");
+ leaderboardPage.classList.remove("hidden");
+
+ document.getElementById("leaderboardNav").classList.remove("secondary");
+ document.getElementById("huntNav").classList.add("secondary");
+ document.getElementById("photosNav").classList.add("secondary");
+
+ renderLeaderboard();
 }
 
 function openLightbox(index) {
