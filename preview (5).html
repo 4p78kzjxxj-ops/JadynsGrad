@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+<style>
+body{font-family:Arial; padding:20px;}
+button{padding:10px; margin:5px;}
+.danger{background:red;color:white;}
+</style>
+</head>
+
+<body>
+
+<h2>Admin Panel</h2>
+
+<button class="danger" onclick="deleteAll()">Delete Everything</button>
+
+<h3>Photos</h3>
+<div id="photos"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+import { getStorage, ref as sRef, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "YOUR_DB_URL",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+let photos=[];
+
+onValue(ref(db,"photos"),snap=>{
+  const val=snap.val()||{};
+  photos = Object.entries(val).map(([id,v])=>({id,...v}));
+  render();
+});
+
+function render(){
+  const div=document.getElementById("photos");
+  div.innerHTML="";
+  photos.forEach(p=>{
+    const el=document.createElement("div");
+    el.innerHTML=`<img src="${p.url}" width=100><button onclick="del('${p.id}','${p.path}')">Delete</button>`;
+    div.appendChild(el);
+  });
+}
+
+window.del = function(id,path){
+  deleteObject(sRef(storage,path));
+  remove(ref(db,"photos/"+id));
+}
+
+window.deleteAll = function(){
+  if(!confirm("Delete EVERYTHING?")) return;
+
+  photos.forEach(p=>{
+    deleteObject(sRef(storage,p.path));
+  });
+
+  remove(ref(db,"photos"));
+  remove(ref(db,"players"));
+}
+
+</script>
+
+</body>
+</html>
